@@ -1,0 +1,10 @@
+sklearn
+pandas
+xgboost
+numpy
+langchain
+pymongo
+pytorch
+transformers
+InstructorEmbedding
+

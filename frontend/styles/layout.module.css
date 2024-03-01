@@ -1,0 +1,19 @@
+/* Layout.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh; 
+    border-top: calc(3vh) solid rgb(255, 255, 255); /* Adjust the color and height as needed */
+  }
+
+  .section h1 {
+    font-size: 50px; /* Adjust the font size as needed */
+    margin-left: 20px; /* Adjust the left margin as needed */
+  }
+  
+  .scrollable {
+    overflow-y: auto;
+    flex-direction: column;
+    max-height: 90vh;
+  }
+

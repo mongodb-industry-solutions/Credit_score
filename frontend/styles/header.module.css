@@ -1,0 +1,62 @@
+/* header.module.css */
+
+.layout-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1%; /* Adjust padding as needed */
+  box-sizing: border-box;
+  font-size: 1.3vw; /* Adjust font size as needed */
+  line-height: 1.5vw; /* Adjust line height as needed */
+  background-color: rgb(255, 255, 255);
+  z-index: 1;
+  height: 5%; /* Adjust the height as needed */
+  border-bottom: 1px solid rgb(232, 237, 235);
+}
+
+.logo {
+  border-radius: 4px;
+  outline-offset: -1px;
+  padding: 1px;
+  transition: box-shadow 100ms ease-in-out 0s;
+  height: 32px;
+  width: auto; /* Allow the logo to adjust its width */
+}
+
+.user-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 10px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin: 0px;
+}
+
+.user-job-title {
+  font-size: 13px;
+  color: #777;
+  margin: 0px;
+}
