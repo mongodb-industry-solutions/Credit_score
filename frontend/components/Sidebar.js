@@ -1,56 +1,33 @@
 // components/Sidebar.js
 
-import React, { useState, useEffect, useRef } from 'react';
-import Icon from '@leafygreen-ui/icon';
-import { ShrinkContext, useShrinkContext } from  '../context/AppContext';
+import React, { useState } from 'react';
 import styles from '../styles/sidebar.module.css';
+import { H3,Body }  from '@leafygreen-ui/typography';
 
 
 const Sidebar = ({ profileInfo }) => {
-    const { isShrunk, setIsShrunk } = useShrinkContext();
-    
-    const sidebarRef = useRef(null);
-  
-    const toggleSidebar = () => {
-      setIsShrunk(!isShrunk);
-    };
-  
-    const handleSidebarClick = () => {
-      setIsShrunk(false);
-    };
-  
-    useEffect(() => {
-      if (sidebarRef.current) {
-        sidebarRef.current.addEventListener('click', handleSidebarClick);
-  
-        return () => {
-          sidebarRef.current.removeEventListener('click', handleSidebarClick);
-        };
-      }
-    }, [sidebarRef.current]);
-
-  const chevronStyle = {
-    marginTop: '15px', // Adjust the top margin as needed
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginRight: '10px', // Adjust the left margin when the sidebar is not shrunk
-  };
 
   return (
-    <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ''}`} ref={sidebarRef}>
-      <div className={styles.toggleButton} style={chevronStyle} onClick={toggleSidebar}>
-        {isShrunk ? <Icon glyph="ChevronRight" /> : <Icon glyph="ChevronLeft" />}
+    <div className={styles.sidebar}>
+      <img className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
+      <div className={styles.profileDetails}>
+      {profileInfo && ( // Check if profileInfo is not null before rendering
+          <>
+            <H3 style = {{ marginBottom: '20px', fontSize: '22px' }}>Customer ID: {profileInfo['Unnamed: 0']}</H3>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Email: {profileInfo.email}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Age: {profileInfo.age}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Monthly Income: {profileInfo.MonthlyIncome}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Open Credit Lines and Loans: {profileInfo.NumberOfOpenCreditLinesAndLoans}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Real Estate Loans or Lines: {profileInfo.NumberRealEstateLoansOrLines}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Serious Dlq in 2yrs: {profileInfo.SeriousDlqin2yrs}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Revolving Utilization Of Unsecured Lines: {profileInfo.RevolvingUtilizationOfUnsecuredLines}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 30-59 Days Past Due Not Worse: {profileInfo['NumberOfTime30-59DaysPastDueNotWorse']}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 90 Days Late: {profileInfo.NumberOfTimes90DaysLate}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 60-89 Days Past Due Not Worse: {profileInfo['NumberOfTime60-89DaysPastDueNotWorse']}</Body>
+            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Dependents: {profileInfo.NumberOfDependents}</Body>
+          </>
+        )}
       </div>
-      {!isShrunk && (
-        <div className={styles.profileContainer}>
-          <img className={styles.profileImage} src={profileInfo.avatar} alt="Profile" />
-          <div className={styles.profileDetails}>
-            <h3>{profileInfo.name}</h3>
-            <p>{profileInfo.email}</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

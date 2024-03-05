@@ -1,6 +1,6 @@
 /* styles/tabsComponent.module.css */
-.tabs {
-    text-align: center;
+.tabs {   
+  text-align: center;
     margin: 20px; /* Adjust the top margin as needed */
   }
   
@@ -13,22 +13,21 @@
   .tab {
     padding: 10px 20px;
     cursor: pointer;
-    border: 1px solid #ccc;
     border-radius: 5px;
     margin: 0 10px;
     user-select: none;
     font-size: 22px; /* Default font size */
-    margin: 10px; /* Default margin */
+    margin: 30px; /* Default margin */
   }
   
   .tab.active {
-    background-color: #007bff;
+    background-color: #00ff22;
     color: #fff;
   }
   
   .textContainer {
     text-align: center;
     font-size: 50px; /* Default font size */
-    margin: 100px; /* Default margin */
+    margin: 10px; /* Default margin */
   }
   

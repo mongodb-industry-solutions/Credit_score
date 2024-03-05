@@ -1,19 +1,16 @@
-/* Layout.module.css */
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 90vh; 
-    border-top: calc(3vh) solid rgb(255, 255, 255); /* Adjust the color and height as needed */
-  }
+/* styles/layout.module.css */
 
-  .section h1 {
-    font-size: 50px; /* Adjust the font size as needed */
-    margin-left: 20px; /* Adjust the left margin as needed */
-  }
-  
-  .scrollable {
-    overflow-y: auto;
-    flex-direction: column;
-    max-height: 90vh;
-  }
+.layoutContainer {
+  display: flex;
+}
 
+.sidebar {
+  flex: 0 0 400px; 
+  transition: flex 0.3s ease; 
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0; 
+  overflow: auto; 
+}
