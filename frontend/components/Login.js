@@ -3,6 +3,7 @@ import { PasswordInput } from '@leafygreen-ui/password-input';
 import TextInput from '@leafygreen-ui/text-input';
 import { H2 } from '@leafygreen-ui/typography';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
+import { Body }  from '@leafygreen-ui/typography';
 
 const LoginPage = () => {
   const [clientId, setClientId] = useState('');
@@ -20,78 +21,62 @@ const LoginPage = () => {
     if (clientId.trim() === '' || password.trim() === '') {
       alert('Please enter both Client ID and Password');
     } else {
-      // Store clientId in localStorage
       localStorage.setItem('clientId', clientId);
-
-      // Redirect to the homepage
       window.location.href = '/';
     }
   };
 
+  const styles = {
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+    },
+    loginBox: {
+      background: '#FFFFFF', 
+      border: '10px', 
+      borderRadius: '10px', 
+      boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '50px', 
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    input: { textAlign: 'left', width: '200px', },
+    button: { margin: '10px' },
+  };
+
   return (
-    <div style={styles.container}>
-      <div style={styles.loginBox}>
-        <form style={styles.form}>
-          <MongoDBLogoMark />
-          <H2>Credit Scoring</H2>
-          <TextInput
-            label="Client ID"
-            placeholder="121"
-            onChange={handleClientIdChange}
-            value={clientId}
-            style={styles.input}
-          />
-          <PasswordInput
-            label="Enter Password"
-            stateNotifications={[
-              {
-                notification: "i'm waiting",
-                state: 'none',
-              },
-            ]}
-            autoComplete="new-password"
-            id="new-password"
-            onChange={handlePasswordChange}
-            value={password}
-            style={styles.input}
-          />
-          <button
-            type="button"
-            onClick={handleLogin}
-            className="leafygreen-ui-1m13q2j"
-            aria-disabled="false"
-          >
-            <div className="leafygreen-ui-1igr8p9">Login</div>
-          </button>
-        </form>
+      <div style={styles.container}>
+        <div style={styles.loginBox}>
+          <form style={styles.form}>
+            <MongoDBLogoMark />
+            <H2 style={styles.button}>Credit Scoring</H2>
+            <TextInput
+              label="Client ID"
+              placeholder="121"
+              onChange={handleClientIdChange}
+              value={clientId}
+              style={{position: 'relative', top: '0px', left: '-10px',  width: '180px', boxSizing: 'border-box',  padding: '5px',}}
+            />
+            <PasswordInput
+              label="Enter Password"
+              id="new-password"
+              onChange={handlePasswordChange}
+              value={password}
+              style={{position: 'relative', top: '0px', left: '14px',  width: '180px',}}
+            />
+            <button type="button" class="leafygreen-ui-1m13q2j" onClick={handleLogin} aria-disabled="false" style={styles.button}><Body>Login</Body></button>
+          </form>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-  },
-  loginBox: {
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    textAlign: 'center',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  input: {
-    width: '150px',
-    textAlign: 'left',
-    margin: 'auto',
-  },
 };
 
 export default LoginPage;

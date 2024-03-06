@@ -17,6 +17,7 @@ function Header() {
       <a href="/login"><Body>Log Out</Body></a>
       </div>
     </div>
+
   );
 }
 

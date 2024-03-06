@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from '../styles/sidebar.module.css';
-import { H3,Body }  from '@leafygreen-ui/typography';
+import { H3,Body,Subtitle }  from '@leafygreen-ui/typography';
 
 
 const Sidebar = ({ profileInfo }) => {
@@ -13,18 +13,51 @@ const Sidebar = ({ profileInfo }) => {
       <div className={styles.profileDetails}>
       {profileInfo && ( 
           <>
-            <H3 style = {{ marginBottom: '20px', fontSize: '22px' }}>Customer ID: {profileInfo['Unnamed: 0']}</H3> 
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Age: {profileInfo.age}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Monthly Income: {profileInfo.MonthlyIncome}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Dependents: {profileInfo.NumberOfDependents}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>DebtRatio: {profileInfo.DebtRatio}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Open Credit Lines and Loans: {profileInfo.NumberOfOpenCreditLinesAndLoans}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number of Real Estate Loans or Lines: {profileInfo.NumberRealEstateLoansOrLines}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Serious deliquency in 2 years: {profileInfo.SeriousDlqin2yrs}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Revolving Utilization Of Unsecured Lines: {profileInfo.RevolvingUtilizationOfUnsecuredLines}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 30-59 Days Past Due: {profileInfo['NumberOfTime30-59DaysPastDueNotWorse']}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 60-89 Days Past Due: {profileInfo['NumberOfTime60-89DaysPastDueNotWorse']}</Body>
-            <Body style={{ marginBottom: '15px', fontSize: '22px' }}>Number Of Times 90 Days Past Due: {profileInfo.NumberOfTimes90DaysLate}</Body>
+            <div><H3 className={styles.profileItem}>Customer ID: {profileInfo['Unnamed: 0']}</H3> </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Age:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.age}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Monthly income:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.MonthlyIncome}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Number of Dependents:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.NumberOfDependents}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Debt Ratio:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.DebtRatio}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Credit Portfolio:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.NumberOfOpenCreditLinesAndLoans}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Property Investments:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.NumberRealEstateLoansOrLines}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Payment History Status:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.SeriousDlqin2yrs}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Unsecured Credit Line Utilization:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.RevolvingUtilizationOfUnsecuredLines}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Number of small payment delays:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo['NumberOfTime30-59DaysPastDueNotWorse']}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Number of medium payment delays:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo['NumberOfTime60-89DaysPastDueNotWorse']}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Number of large payment delays:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>{profileInfo.NumberOfTimes90DaysLate}</Body>
+            </div>
           </>
         )}
       </div>

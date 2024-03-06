@@ -17,13 +17,21 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  margin: 40px auto 10px; 
+  margin: 30px auto 10px; 
   display: block;
 }
 
+.profileItem {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
 .profileDetails {
-  text-align: center;
-  margin-top: 20px; 
+  display: flex;
+  flex-direction: column;
 }
 
 .line {
