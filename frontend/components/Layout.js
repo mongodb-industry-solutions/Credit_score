@@ -11,7 +11,7 @@ const Layout = ({ sidebar, mainContent }) => {
   };
 
   return (
-    <div style={{ position: 'relative', display: 'flex', minHeight: '100vh' }}>
+    <div style={{ position: 'relative', display: 'flex', minHeight: '100vh', maxWidth: '100vw' }}>
       <div style={{ flex: '0 0 200px', display: isSidebarVisible ? 'block' : 'none' }}>
         {sidebar}
       </div>
@@ -37,7 +37,7 @@ const Layout = ({ sidebar, mainContent }) => {
         {isSidebarVisible ? <Icon glyph="ChevronLeft" /> : <Icon glyph="ChevronRight" />}
       </button>
 
-      <div style={{ flex: '1', padding: '20px', marginLeft: isSidebarVisible ? '220px' : '50px', marginTop: '1%' }}>
+      <div style={{ flex: '1', padding: '20px', marginLeft: isSidebarVisible ? '220px' : '50px',  marginTop: '1%', whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
         {mainContent}
       </div>
     </div>

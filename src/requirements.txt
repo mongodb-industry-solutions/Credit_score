@@ -1,10 +1,13 @@
-sklearn
+scikit-learn
 pandas
 xgboost
 numpy
 langchain
+openai
 pymongo
-pytorch
+torch
 transformers
 InstructorEmbedding
+beautifulsoup4
+
 

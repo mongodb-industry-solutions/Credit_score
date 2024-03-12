@@ -20,7 +20,7 @@ const Sidebar = ({ profileInfo }) => {
             </div>
             <div className={styles.profileItem}>
               <Subtitle>Monthly income:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.MonthlyIncome}</Body>
+              <Body baseFontSize={16}>${profileInfo.MonthlyIncome}</Body>
             </div>
             <div className={styles.profileItem}>
               <Subtitle>Number of Dependents:&nbsp;</Subtitle>
@@ -39,15 +39,11 @@ const Sidebar = ({ profileInfo }) => {
               <Body baseFontSize={16}>{profileInfo.NumberRealEstateLoansOrLines}</Body>
             </div>
             <div className={styles.profileItem}>
-              <Subtitle>Payment History Status:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.SeriousDlqin2yrs}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Unsecured Credit Line Utilization:&nbsp;</Subtitle>
+              <Subtitle>Unsecured Credit Line Use:&nbsp;</Subtitle>
               <Body baseFontSize={16}>{profileInfo.RevolvingUtilizationOfUnsecuredLines}</Body>
             </div>
             <div className={styles.profileItem}>
-              <Subtitle>Number of small payment delays:&nbsp;</Subtitle>
+              <Subtitle>Number of short payment delays:&nbsp;</Subtitle>
               <Body baseFontSize={16}>{profileInfo['NumberOfTime30-59DaysPastDueNotWorse']}</Body>
             </div>
             <div className={styles.profileItem}>
@@ -55,8 +51,12 @@ const Sidebar = ({ profileInfo }) => {
               <Body baseFontSize={16}>{profileInfo['NumberOfTime60-89DaysPastDueNotWorse']}</Body>
             </div>
             <div className={styles.profileItem}>
-              <Subtitle>Number of large payment delays:&nbsp;</Subtitle>
+              <Subtitle>Number of long payment delays:&nbsp;</Subtitle>
               <Body baseFontSize={16}>{profileInfo.NumberOfTimes90DaysLate}</Body>
+            </div>
+            <div className={styles.profileItem}>
+              <Subtitle>Utility bills:&nbsp;</Subtitle>
+              <Body baseFontSize={16}>NaN</Body>
             </div>
           </>
         )}

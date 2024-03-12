@@ -1,10 +1,12 @@
 import React from 'react';
-import { Body } from '@leafygreen-ui/typography';
+import { Body, H3 } from '@leafygreen-ui/typography';
 
 const TextWithImage = ({ items }) => {
+  console.log(items);
+
   return (
     <div>
-      {items.map((item, index) => (
+      {Object.keys(items).map((key, index) => (
         <div
           key={index}
           style={{
@@ -17,11 +19,16 @@ const TextWithImage = ({ items }) => {
           }}
         >
           <img
-            src={'/images/creditCard.png'}
+            src={key === "No Connexion" ? '/images/Error.png' : '/images/creditCard.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
           />
-          <Body baseFontSize={16}>{item}</Body>
+          <div>
+            <H3>{key}</H3>
+            <Body as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', overflowX: 'hidden', fontSize: '20px', fontFamily: 'sans-serif',  }} >
+              {items[key]}
+            </Body>
+          </div>
         </div>
       ))}
     </div>
