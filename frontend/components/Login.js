@@ -4,6 +4,7 @@ import TextInput from '@leafygreen-ui/text-input';
 import { H2 } from '@leafygreen-ui/typography';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import { Body }  from '@leafygreen-ui/typography';
+import Button  from '@leafygreen-ui/button';
 
 const LoginPage = () => {
   const [clientId, setClientId] = useState('');
@@ -72,7 +73,7 @@ const LoginPage = () => {
               value={password}
               style={{position: 'relative', top: '0px', left: '14px',  width: '180px',}}
             />
-            <button type="button" class="leafygreen-ui-1m13q2j" onClick={handleLogin} aria-disabled="false" style={styles.button}><Body>Login</Body></button>
+            <Button size={'default'} onClick={handleLogin} style={{marginTop: '10px',}} > Login </Button>
           </form>
       </div>
     </div>

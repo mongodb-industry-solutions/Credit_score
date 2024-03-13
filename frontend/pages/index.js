@@ -11,10 +11,12 @@ import { Tabs, Tab } from '@leafygreen-ui/tabs';
 const HomePage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true); 
-  const [loadingSecondTab, setLoadingSecondTab] = useState(true); 
+  const [loading2, setLoading2] = useState(true); 
+  const [SecondTab, setSecondTab] = useState(true); 
   const [selected, setSelected] = useState(0)
   const [explSets, setExplSets] = useState({"userProfile":""})
   const [recSets, setRecSets] = useState({"product_suggestions":null})
+  const [error, setError] = useState(false)
 
 
   useEffect(() => {
@@ -58,12 +60,13 @@ const HomePage = () => {
         window.location.href = '/login';
         return;
       }
-      //setLoading(false); //to be removed
+      setLoading2(false);
       setData(jsonData);
       
       
     } catch (error) {
       console.error('Error fetching API data:', error);
+      setLoading2(false);
     }
   };
 
@@ -85,6 +88,7 @@ const HomePage = () => {
     } catch (error) {
       console.error('Error fetching API response:', error);
       setLoading(false);
+      setError(true);
     }
   };
 
@@ -102,11 +106,11 @@ const HomePage = () => {
 
       const text = await response.json();
       setRecSets(text);
-      setLoadingSecondTab(false);
+      setSecondTab(false);
 
     } catch (error) {
       console.error('Error fetching API response:', error);
-      setLoadingSecondTab(false);
+      setSecondTab(false);
     }
   };
   /*
@@ -115,37 +119,32 @@ const HomePage = () => {
   } };
 
   /*
-  const textSet =  textSets ? textSets : {'explaination': "1. Your credit request was rejected based on a combination of factors that the bank considers when evaluating credit card applications. \n   \n2. One of the key factors that influenced the decision is your low number of open credit lines and loans, which indicates limited credit history and experience managing credit accounts.\n\n3. Additionally, your debt ratio, which is the ratio of your monthly debt payments to your gross monthly income, is relatively high. This suggests that a significant portion of your income is already allocated towards debt obligations, raising concerns about your ability to manage additional credit responsibly.\n\n4. While your monthly income is relatively high, other factors such as your age and lack of dependents may have also played a role in the decision.\n\n5. It's important to note that the bank uses a predictive model to assess creditworthiness, and based on the model's analysis of your profile, the likelihood of experiencing delinquency in the next 2 years is relatively low.\n\n6. Overall, the combination of these factors led to the rejection of your credit card application. If you have any further questions or would like more information, please feel free to reach out to us. "
-  ,'product': {
-
-    "diners club miles card": 
-    "1. Complimentary lounge access worldwide.\n2. Concierge service for travel needs.\n3. Earn reward points for flights and hotels.\n4. Comprehensive insurance coverage.\n5. Low annual fee and renewal fee.\n6. Cash advance fee and interest rate details.",
-
-    "diners club premium card": 
-    "1. Welcome benefits and renewal benefits of 2,500 reward points each.\n2. Up to 6 complimentary lounge accesses worldwide.\n3. Redemption options for flights and hotels.\n4. 24x7 concierge service.\n5. Low mark-up on foreign currency transactions.\n6. Comprehensive insurance coverage.",
-
-    "diners club rewardz card": 
-    "1. Earn reward points for spends.\n2. Cashback on SmartBuy purchases.\n3. Travel benefits for flights and hotels.\n4. Concierge service.\n5. Savings on foreign currency transactions.\n6. Low annual fee and renewal fee.",
-
-    "freedom card card": 
-    "1. Earn reward points on spends.\n2. Redeem points for cash back or products.\n3. Fuel surcharge waiver.\n4. EMV Chip technology for security.\n5. Interest-free credit period.\n6. Annual fee waiver on meeting spending criteria.",
-
-    "moneyback plus card": 
-    "1. Earn CashPoints on various categories.\n2. Gift voucher benefits.\n3. Interest-free credit period.\n4. Revolving credit.\n5. Exclusive dining privileges.\n6. Fuel surcharge waiver.",
-
-    "paytm tengen bank credit card card": 
-    "1. Cashback on Paytm and retail spends.\n2. Exclusions for cashback eligibility.\n3. Interest-free credit period.\n4. Utility bill payments through SmartPay.\n5. Contactless payment capabilities.\n6. Fee waiver on meeting spending criteria.",
-
-  }
-  };
+        <img
+            src={key === "No Connexion" ? '/images/Error.png' : '/images/creditCard.png'}
+            alt="Description"
+            style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
+          />
   */
 
   const textSet1WithIframe = (
     <div>
+      {error ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
+        <img
+          src={'/images/Error.png'}
+          alt="Description"
+          style={{ marginRight: '10px', maxWidth: '40px', borderRadius: '10px',marginTop: '10px' }}
+        />
+        <Body baseFontSize={16} as="pre" style={{ marginTop: '15px', fontSize: '19px', fontFamily: 'sans-serif' }}>
+          Connexion error please refresh the page
+        </Body>
+      </div>
+      ):(
+        <div></div>
+      )}
       <Body baseFontSize={16}  as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', overflowX: 'hidden', fontSize: '19px', fontFamily: 'sans-serif',  }} >
         {explSets["userProfile"]}
       </Body>
-
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
         <iframe
           style={{ background: '#FFFFFF', border: 'none', borderRadius: '2px', boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)' }}
@@ -156,11 +155,11 @@ const HomePage = () => {
       </div>
     </div>
   );
-
-
+  
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {loading ? (
+      {loading || loading2 ? (
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',fontSize: '19px', fontFamily: 'sans-serif' }}>
           Loading...
         </div>
@@ -175,8 +174,8 @@ const HomePage = () => {
                   <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
                 </div>
                   <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
-                    <Tab name="Rejection explaination">{textSet1WithIframe}</Tab>
-                    <Tab disabled={loadingSecondTab} name="Product offerings">
+                    <Tab name="Rejection explaination" style={{zIndex:0}}>{textSet1WithIframe}</Tab>
+                    <Tab disabled={SecondTab} name="Product offerings" style={{zIndex:0}}>
                       <TextWithImage items={recSets["productRecommendations"]} />
                     </Tab>
                   </Tabs>

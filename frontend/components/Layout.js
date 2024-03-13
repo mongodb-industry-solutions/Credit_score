@@ -15,14 +15,13 @@ const Layout = ({ sidebar, mainContent }) => {
       <div style={{ flex: '0 0 200px', display: isSidebarVisible ? 'block' : 'none' }}>
         {sidebar}
       </div>
-      {/* Floatable Toggle Sidebar Button */}
       <button
         onClick={toggleSidebar}
         style={{
           position: 'fixed',
           top: '70px',
           left: isSidebarVisible ? '400px' : '25px',
-          zIndex: 1,
+          zIndex: 0,
           width: '40px',
           height: '40px',
           borderRadius: '50%',
