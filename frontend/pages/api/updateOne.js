@@ -6,10 +6,6 @@ export default async function handler(req, res) {
   try {
     const { filter, update } = req.body;
 
-    console.log('body:', req.body);
-    console.log('filter:', filter);
-    console.log('update:', update);
-
     const client = await clientPromise;
     const db = client.db('bfsi-genai');
     const coll = db.collection('credit_history');
