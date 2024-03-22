@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import joblib
 import numpy as np
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.vectorstores import MongoDBAtlasVectorSearch
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain_mongodb import MongoDBAtlasVectorSearch
+from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.retrievers import MultiQueryRetriever
 import os
 import pandas as pd
@@ -19,11 +20,11 @@ import logging
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app) 
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
-print(col.find_one({}))
 vcol = client["bfsi-genai"]["cc_products"]
 llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=200, max_output_tokens=1024)
 llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
@@ -36,7 +37,7 @@ vectorstore = MongoDBAtlasVectorSearch(vcol, hf)
 retriever = vectorstore.as_retriever(search_type='similarity',search_kwargs={'k': 3})
 recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm_large)
 
-model = joblib.load("classifier.jlb")
+model = joblib.load("./model/classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
 df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))

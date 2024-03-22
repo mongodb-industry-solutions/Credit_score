@@ -60,13 +60,13 @@ const HomePage = () => {
         window.location.href = '/login';
         return;
       }
-      setLoading2(false);
+      setLoading(false);
       setData(jsonData);
       
       
     } catch (error) {
       console.error('Error fetching API data:', error);
-      setLoading2(false);
+      setLoading(false);
     }
   };
 
@@ -74,28 +74,24 @@ const HomePage = () => {
   const fetchExpl = async (clientId) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
       const response = await fetch(`${apiUrl}/credit_score?userId=${clientId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         } });
-
       const text = await response.json();
       setExplSets(text);
-      setLoading(false);
+      setLoading2(false);
 
     } catch (error) {
       console.error('Error fetching API response:', error);
       setLoading(false);
-      setError(true);
     }
   };
 
   const fetchRec = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
       const response = await fetch(`${apiUrl}/product_suggestions`, {
         method: 'POST',
         headers: {
@@ -103,7 +99,6 @@ const HomePage = () => {
         } ,
         body: JSON.stringify(explSets)
       });
-
       const text = await response.json();
       setRecSets(text);
       setSecondTab(false);
@@ -172,7 +167,7 @@ const HomePage = () => {
                   <H3 style={{ display: 'inline' }}>Credit card application status : </H3>
                   <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7',  padding: '3px' }}>
                   <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
-                </div>
+                  </div>
                   <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
                     <Tab name="Rejection explaination" style={{zIndex:0}}>{textSet1WithIframe}</Tab>
                     <Tab disabled={SecondTab} name="Product offerings" style={{zIndex:0}}>
