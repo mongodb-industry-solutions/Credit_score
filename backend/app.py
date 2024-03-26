@@ -20,7 +20,7 @@ import logging
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "*"}})  
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())

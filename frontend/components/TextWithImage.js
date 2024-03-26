@@ -2,6 +2,13 @@ import React from 'react';
 import { Body, H3 } from '@leafygreen-ui/typography';
 
 const TextWithImage = ({ items }) => {
+
+  if (!items || Object.keys(items).length === 0) {
+    items = {
+      "No Credit Card Recomended":"User credit product approval status is Rejected"
+    }
+  };
+
   const itemsJSON = JSON.parse(items);
   console.log('itemsJSON',itemsJSON);
 
@@ -20,7 +27,7 @@ const TextWithImage = ({ items }) => {
           }}
         >
           <img
-            src={key === "No Connexion" ? '/images/Error.png' : '/images/creditCard.png'}
+            src={key === "No Credit Card Recomended" ? '/images/Error.png' : '/images/creditCard.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
           />
