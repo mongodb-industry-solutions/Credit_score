@@ -100,7 +100,7 @@ const HomePage = () => {
         body: JSON.stringify(explSets)
       });
       const text = await response.json();
-      setRecSets(text);
+      setRecSets(text["productRecommendations"]);
       setSecondTab(false);
 
     } catch (error) {
@@ -171,7 +171,7 @@ const HomePage = () => {
                   <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
                     <Tab name="Rejection explaination" style={{zIndex:0}}>{textSet1WithIframe}</Tab>
                     <Tab disabled={SecondTab} name="Product offerings" style={{zIndex:0}}>
-                      <TextWithImage items={recSets["productRecommendations"]} />
+                      <TextWithImage items={recSets} />
                     </Tab>
                   </Tabs>
                 </div>

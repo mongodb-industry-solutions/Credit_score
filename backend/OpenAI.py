@@ -1,13 +1,13 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import joblib
 import numpy as np
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
-from langchain.llms import OpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.vectorstores import MongoDBAtlasVectorSearch
-from langchain.embeddings import HuggingFaceInstructEmbeddings
+from langchain_community.llms import OpenAI
+from langchain_mongodb import MongoDBAtlasVectorSearch
+from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain.retrievers import MultiQueryRetriever
 import os
 import pandas as pd
@@ -19,24 +19,22 @@ import logging
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app) 
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
-print(col.find_one({}))
 vcol = client["bfsi-genai"]["cc_products"]
-llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=200, max_output_tokens=1024)
-llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
-# llm = OpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
-# llm_large= OpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
+llm = OpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
+llm_large= OpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
 repo_id = "hkunlp/instructor-base"
 hf = HuggingFaceInstructEmbeddings(model_name=repo_id, cache_folder="tmp/")
 hf.embed_instruction = "Represent the document for retrieval of personalized credit cards:"
 vectorstore = MongoDBAtlasVectorSearch(vcol, hf)
 retriever = vectorstore.as_retriever(search_type='similarity',search_kwargs={'k': 3})
-recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm_large)
+recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm)
 
-model = joblib.load("classifier.jlb")
+model = joblib.load("./model/classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
 df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))
@@ -99,7 +97,8 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
     recomendations_template=f"""
 ##Instruction:
 - The user profile is considered high risk if the
-- Only If the the user credit product approval status is Rejected then return "No Credit Card Recomended"
+- Only If the the user credit product approval status is Rejected then return "No Credit Card Recomended", even in that case a JSON should be returned
+- There should always be an Output JSON output, but you should never return the user profile in the JSON output.
 
 ## User profile:
 {user_profile}
@@ -117,12 +116,12 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
 </result>
 """
     res = llm.invoke(recomendations_template)
-    print(res.content)
-    if res.content.strip().startswith("{"):
-        op = res.content.replace("""\\n""", "\n")
+    #print(res)
+    if res.strip().startswith("{"):
+        op = res.replace("""\\n""", "\n")
         return op
-    elif res.content.startswith("```json"):
-        op = res.content.replace("```json\n", "").replace("""\n```""", "")
+    elif res.startswith("```json"):
+        op = res.replace("```json\n", "").replace("""\n```""", "")
         return json.loads(op)
 
 
@@ -155,11 +154,12 @@ def get_credit_score():
     pred , allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
     prompt = get_credit_score_expl_prompt(user_profile_ip, pred,allowed_credit_limit)
     response = llm.invoke(prompt)
-    return jsonify({"userProfile": response.content, "delinquencyStatus": str(pred), "allowedCreditLimit": allowed_credit_limit}) 
+    return jsonify({"userProfile": response, "delinquencyStatus": str(pred), "allowedCreditLimit": allowed_credit_limit}) 
 
 @app.route("/product_suggestions", methods=["POST"])
 def get_product_suggestions_endpoint():
     data = request.get_json()
+    
     user_profile = data["userProfile"]
     allowed_credit_limt = data["allowedCreditLimit"]
     pred = data["delinquencyStatus"]

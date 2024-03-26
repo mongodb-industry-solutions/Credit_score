@@ -2,11 +2,12 @@ import React from 'react';
 import { Body, H3 } from '@leafygreen-ui/typography';
 
 const TextWithImage = ({ items }) => {
-  console.log(items);
+  const itemsJSON = JSON.parse(items);
+  console.log('itemsJSON',itemsJSON);
 
   return (
     <div>
-      {Object.keys(items).map((key, index) => (
+      {Object.keys(itemsJSON).map((key, index) => (
         <div
           key={index}
           style={{
