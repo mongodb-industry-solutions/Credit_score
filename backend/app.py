@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import joblib
 import numpy as np
 from dotenv import load_dotenv
@@ -19,6 +20,7 @@ import logging
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app) 
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
@@ -36,7 +38,7 @@ vectorstore = MongoDBAtlasVectorSearch(vcol, hf)
 retriever = vectorstore.as_retriever(search_type='similarity',search_kwargs={'k': 3})
 recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm_large)
 
-model = joblib.load("classifier.jlb")
+model = joblib.load("./model/classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
 df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))
