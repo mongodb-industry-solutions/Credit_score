@@ -90,7 +90,6 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words
-- cast the values between the result tags in a JSON format
 <result>
 Approval Status: {status}
 Reason for Decision:[Reason]
