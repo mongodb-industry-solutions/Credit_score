@@ -57,7 +57,7 @@ def get_user_profile(user_id):
     return pred, allowed_credit_limit, user_profile_ip
 
 def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit):
-    status = "Approved" if pred<0.5 else "Rejected"
+    status = "Approved" if pred<0.007089000346842316 else "Rejected"
     prompt = f"""
 ##Instruction: 
 - Taking into account the Definitions of various fields and their respective values a model is trained to predict weather a person will expericen delinquency or not in the next 2 years.
@@ -90,6 +90,7 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words
+- cast the values between the result tags in a JSON format
 <result>
 Approval Status: {status}
 Reason for Decision:[Reason]
