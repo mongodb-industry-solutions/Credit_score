@@ -68,6 +68,8 @@ const HomePage = () => {
 
       if (parseFloat(jsonData["SeriousDlqin2yrs"]) < 1) {
         await setStatus(true);
+        console.log('status',status);
+        console.log('jsonData',jsonData);
       }
       
       
