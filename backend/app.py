@@ -26,7 +26,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
-print(col.find_one({}))
+#print(col.find_one({}))
 vcol = client["bfsi-genai"]["cc_products"]
 llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=250, max_output_tokens=1024)
 llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
@@ -85,6 +85,7 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 {user_profile_ip}
 
 ## Model Result:
+- Credit Product Approval Status={status}
 - Allowed Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:

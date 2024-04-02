@@ -63,6 +63,12 @@ const HomePage = () => {
       }
       setLoading(false);
       setData(jsonData);
+
+
+
+      if (parseFloat(jsonData["SeriousDlqin2yrs"]) < 1) {
+        await setStatus(true);
+      }
       
       
     } catch (error) {
@@ -84,10 +90,6 @@ const HomePage = () => {
       setExplSets(text);
       setLoading2(false);
       console.log('text',text);
-
-      if (parseFloat(text["delinquencyStatus"]) < 0.5) {
-        setStatus(true);
-      }
 
     } catch (error) {  
       setLoading2(false);
@@ -126,6 +128,7 @@ const HomePage = () => {
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
           />
   */
+  const CHART_URL = process.env.NEXT_PUBLIC_CHART_URL;
 
   const textSet1WithIframe = (
     <div>
@@ -151,7 +154,7 @@ const HomePage = () => {
           style={{ background: '#FFFFFF', border: 'none', borderRadius: '2px', boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)' }}
           width="400"
           height="200"
-          src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=65e6fd50-620b-4479-85ad-0076a175a160&maxDataAge=3600&theme=light&autoRefresh=true"
+          src={CHART_URL}
         />
       </div>
     </div>
