@@ -12,8 +12,7 @@ const TextWithImage = ({ items }) => {
   console.log('items', items);
   let itemsJSON;
   if (typeof items === 'object') {
-    // If items is an object, convert it to JSON
-    itemsJSON = JSON.stringify(items);
+    itemsJSON = items;
   } else {
     itemsJSON = JSON.parse(items);
   }
