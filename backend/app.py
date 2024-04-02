@@ -56,8 +56,8 @@ def get_user_profile(user_id):
     logging.info(f"Allowed Credit Limit for the user: {allowed_credit_limit}")
     return pred, allowed_credit_limit, user_profile_ip
 
-def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit):
-    status = "Approved" if pred<0.007089000346842316 else "Rejected"
+def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit, thresh=0.3):
+    status = "Approved" if pred<thresh else "Rejected"
     prompt = f"""
 ##Instruction: 
 - Taking into account the Definitions of various fields and their respective values a model is trained to predict weather a person will expericen delinquency or not in the next 2 years.
@@ -90,45 +90,42 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words
-<result>
-Approval Status: {status}
+
 Reason for Decision:[Reason]
-</result>
 """
     return prompt
 
-def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, allowed_credit_limit,):
-    status = "Approved" if float(pred)<0.007089000346842316 else "Rejected"
-    recomendations_template=f"""
-##Instruction:
-- The user profile is considered high risk if the
-- Only If the the user credit product approval status is Rejected then return "No Credit Card Recomended"
+def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, allowed_credit_limit,thresh=0.3):
+    status = "Approved" if float(pred)<thresh else "Rejected"
+    if status == 'Approved':
+        recomendations_template=f"""
+        ##Instruction:
+        - Given the user profile and recommended credit cards that will best fit the user profile.
+        - Provide reason as to why the credit card is suggested to the user for each card.
 
-## User profile:
-{user_profile}
+        ## User profile:
+        {user_profile}
 
-## Model Result:
-- Credit Product Approval Status={status}
-- Allowed Credit Limit for the user={allowed_credit_limit}
+        ## Model Result:
+        - Credit Product Approval Status={status}
+        - Allowed Credit Limit for the user={allowed_credit_limit}
 
-## Recommended Credit cards if Eligible:
-{card_suggestions}
+        ## Credit cards Suggestions:
+        {card_suggestions}
 
-## Recommendations=Output as Json with card name as Key and concise reasons point by point as Value:
-<result>
-{{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2"}}
-</result>
-"""
-    res = invoke_llm(recomendations_template)
-    # res = llm.invoke(recomendations_template)
-    print(res.content)
-    if res.content.strip().startswith("{"):
-        op = res.content.replace("""\\n""", "\n")
-        return op
-    elif res.content.startswith("```json"):
-        op = res.content.replace("```json\n", "").replace("""\n```""", "")
-        return json.loads(op)
-
+        ## Recommendations=Output as Json with card name as Key and concise reasons point by point as Value:
+        {{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2",...}}
+        """
+        res = invoke_llm(recomendations_template)
+        # res = llm.invoke(recomendations_template)
+        if res.content.strip().startswith("{"):
+            op = res.content.replace("""\\n""", "\n")
+            return op
+        elif res.content.startswith("```json"):
+            op = res.content.replace("```json\n", "").replace("""\n```""", "")
+            return json.loads(op)
+    else:
+        return {"No Credit Card Recomended": "Credit Product Approval Status is Rejected"}
 @lru_cache(100)
 def get_product_suggestions(user_profile):
     user_profile_based_card_template=f"""
