@@ -64,7 +64,7 @@ const HomePage = () => {
       setLoading(false);
       setData(jsonData);
 
-      if (parseFloat(jsonData["PredDlqin2yrs"]) < 0.007089000346842316) {
+      if (parseFloat(jsonData["PredDlqin2yrs"]) < 0.3) {
         await setStatus(true);
       } else {
         await setStatus(false);
