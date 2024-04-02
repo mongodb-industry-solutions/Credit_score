@@ -17,6 +17,7 @@ const HomePage = () => {
   const [explSets, setExplSets] = useState({"userProfile":""})
   const [recSets, setRecSets] = useState({"product_suggestions":null})
   const [error, setError] = useState(false)
+  const [status, setStatus] = useState(false)
 
 
   useEffect(() => {
@@ -83,9 +84,9 @@ const HomePage = () => {
       setExplSets(text);
       setLoading2(false);
 
-    } catch (error) {
+    } catch (error) {  
+      setLoading2(false);
       console.error('Error fetching API response:', error);
-      setLoading(false);
     }
   };
 
@@ -155,32 +156,39 @@ const HomePage = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {loading || loading2 ? (
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',fontSize: '19px', fontFamily: 'sans-serif' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '19px', fontFamily: 'sans-serif' }}>
           Loading...
         </div>
       ) : (
-        <><div style={{ flex: 1 }}>
-            <Header />
-            <Layout sidebar={<Sidebar profileInfo={data} />}
-              mainContent={
-                <div style={{ margin: '3%', marginTop: '30px' }}>
-                  <H3 style={{ display: 'inline' }}>Credit card application status : </H3>
-                  <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7',  padding: '3px' }}>
-                  <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
-                  </div>
-                  <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
-                    <Tab name="Rejection explaination" style={{zIndex:0}}>{textSet1WithIframe}</Tab>
-                    <Tab disabled={SecondTab} name="Product offerings" style={{zIndex:0}}>
-                      <TextWithImage items={recSets} />
-                    </Tab>
-                  </Tabs>
-                </div>
-              }
-            />
-          </div></>
+        <div style={{ flex: 1 }}>
+          <Header />
+          <Layout sidebar={<Sidebar profileInfo={data} />}
+                  mainContent={
+                    <div style={{ margin: '3%', marginTop: '30px' }}>
+                      <H3 style={{ display: 'inline' }}>Credit card application status : </H3>
+                      {status ? (
+                        <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7', padding: '3px' }}>
+                          <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'inline-block', borderRadius: '25px', background: '#C0FAE6', padding: '3px' }}>
+                          <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;ACCEPTED&nbsp;</H3>
+                        </div>
+                      )}
+                      <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
+                        <Tab name="Rejection explanation" style={{ zIndex: 0 }}>{textSet1WithIframe}</Tab>
+                        <Tab disabled={SecondTab} name="Product offerings" style={{ zIndex: 0 }}>
+                          <TextWithImage items={recSets} />
+                        </Tab>
+                      </Tabs>
+                    </div>
+                  }
+          />
+        </div>
       )}
     </div>
   );
+  
 };
 
 export default HomePage;

@@ -14,20 +14,21 @@ import os
 import pandas as pd
 import json
 import re
+from functools import lru_cache
 
 import logging
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
 print(col.find_one({}))
 vcol = client["bfsi-genai"]["cc_products"]
-llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=200, max_output_tokens=1024)
+llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=250, max_output_tokens=1024)
 llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
 # llm = OpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
 # llm_large= OpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
@@ -38,7 +39,7 @@ vectorstore = MongoDBAtlasVectorSearch(vcol, hf)
 retriever = vectorstore.as_retriever(search_type='similarity',search_kwargs={'k': 3})
 recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm_large)
 
-model = joblib.load("./model/classifier.jlb")
+model = joblib.load("classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
 df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))
@@ -84,14 +85,14 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 {user_profile_ip}
 
 ## Model Result:
-- Probability of the user experiencing 90 days past due delinquency or worse in the next 2 years={pred}
 - Credit Product Approval Status={status}
 - Allowed Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words
 <result>
-{"UserProfile":}
+Approval Status: {status}
+Reason for Decision:[Reason]
 </result>
 """
     return prompt
@@ -118,7 +119,8 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
 {{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2"}}
 </result>
 """
-    res = llm.invoke(recomendations_template)
+    res = invoke_llm(recomendations_template)
+    # res = llm.invoke(recomendations_template)
     print(res.content)
     if res.content.strip().startswith("{"):
         op = res.content.replace("""\\n""", "\n")
@@ -127,14 +129,10 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
         op = res.content.replace("```json\n", "").replace("""\n```""", "")
         return json.loads(op)
 
-
+@lru_cache(100)
 def get_product_suggestions(user_profile):
     user_profile_based_card_template=f"""
 ##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
-- If the user profile has a higher age recommed card with lower annual fees
-- If the user profile has a higher MonthlyIncome recommed card with higher benefits such as lounge access, brand affiliated discounts etc.
-- If the user profile has a higher NumberOfOpenCreditLinesAndLoans recommed card with lower credit limit
-- If the user profile has a higher NumberOfDependents recommed card with lower annual fees
 
 ## User profile:
 {user_profile}
@@ -151,12 +149,17 @@ def get_product_suggestions(user_profile):
 def say_hello():
     return jsonify({"msg": "Hello from Flask"})
 
+@lru_cache(1000)
+def invoke_llm(prompt):
+    response = llm.invoke(prompt)
+    return response
+
 @app.route("/credit_score", methods=["GET"])
 def get_credit_score():
     user_id = request.args.get("userId")
     pred , allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
     prompt = get_credit_score_expl_prompt(user_profile_ip, pred,allowed_credit_limit)
-    response = llm.invoke(prompt)
+    response = invoke_llm(prompt)    
     return jsonify({"userProfile": response.content, "delinquencyStatus": str(pred), "allowedCreditLimit": allowed_credit_limit}) 
 
 @app.route("/product_suggestions", methods=["POST"])

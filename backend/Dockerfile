@@ -5,7 +5,9 @@ COPY ./tmp /app
 COPY ./requirements.txt /app
 COPY ./app.py /app
 COPY ./model/classifier.jlb /app
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 5000
+ENV PORT 5000
 ENV FLASK_APP=app.py
-CMD ["flask", "run", "--host", "0.0.0.0"]
+CMD ["flask", "run", "--host", "0.0.0.0", "--port", "5000"]
