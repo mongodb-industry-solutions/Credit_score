@@ -85,13 +85,11 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 {user_profile_ip}
 
 ## Model Result:
-- Credit Product Approval Status={status}
 - Allowed Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words
 <result>
-Approval Status: {status}
 Reason for Decision:[Reason]
 </result>
 """

@@ -83,6 +83,11 @@ const HomePage = () => {
       const text = await response.json();
       setExplSets(text);
       setLoading2(false);
+      console.log('text',text);
+
+      if (parseFloat(text["delinquencyStatus"]) < 0.5) {
+        setStatus(true);
+      }
 
     } catch (error) {  
       setLoading2(false);
