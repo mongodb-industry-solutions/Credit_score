@@ -174,7 +174,7 @@ const HomePage = () => {
                   mainContent={
                     <div style={{ margin: '3%', marginTop: '30px' }}>
                       <H3 style={{ display: 'inline' }}>Credit card application status : </H3>
-                      {status ? (
+                      {status === false ? (
                         <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7', padding: '3px' }}>
                           <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
                         </div>
