@@ -98,7 +98,7 @@ Reason for Decision:[Reason]
     return prompt
 
 def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, allowed_credit_limit,):
-    status = "Approved" if float(pred)<0.5 else "Rejected"
+    status = "Approved" if float(pred)<0.007089000346842316 else "Rejected"
     recomendations_template=f"""
 ##Instruction:
 - The user profile is considered high risk if the
