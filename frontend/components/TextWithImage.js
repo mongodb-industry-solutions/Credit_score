@@ -8,8 +8,9 @@ const TextWithImage = ({ items }) => {
       "No Credit Card Recomended":"User credit product approval status is Rejected"
     }
   };
-
+  console.log('items', items);
   const itemsJSON = JSON.parse(items);
+  console.log('itemsJSON', itemsJSON);
 
   return (
     <div>

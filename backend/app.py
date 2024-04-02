@@ -42,7 +42,7 @@ recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm
 model = joblib.load("classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
-df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0,"PredDlqin2yrs":0})))
+df = pd.DataFrame.from_records((col.find({"Unnamed: 0":1}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0,"PredDlqin2yrs":0})))
 feature_importance = "\n".join(i for i in list(map(lambda x:f"Columns:{x[0]}  Prob score for decision making:{x[1]}" ,zip(df.columns[imp_idx], model.feature_importances_[imp_idx]))))
 
 def get_user_profile(user_id):
