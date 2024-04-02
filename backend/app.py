@@ -42,11 +42,11 @@ recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm
 model = joblib.load("classifier.jlb")
 imp_idx = np.argsort(-1 * model.feature_importances_)
 
-df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))
+df = pd.DataFrame.from_records((col.find({"Unnamed: 0":9}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0,"PredDlqin2yrs":0})))
 feature_importance = "\n".join(i for i in list(map(lambda x:f"Columns:{x[0]}  Prob score for decision making:{x[1]}" ,zip(df.columns[imp_idx], model.feature_importances_[imp_idx]))))
 
 def get_user_profile(user_id):
-    user_id_df = pd.DataFrame.from_records((col.find({"Unnamed: 0":int(user_id)}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0})))
+    user_id_df = pd.DataFrame.from_records((col.find({"Unnamed: 0":int(user_id)}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0,"PredDlqin2yrs":0})))
     print(user_id_df)
     user_profile_ip = user_id_df.to_dict(orient="records")[0]
     print(user_profile_ip)
@@ -70,7 +70,7 @@ def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit):
 - age=Age of borrower in years DataType=integer
 - NumberOfTime30-59DaysPastDueNotWorse=Number of times borrower has been 30-59 days past due but no worse in the last 2 years. DataType=integer
 - DebtRatio=Monthly debt payments, alimony,living costs divided by monthy gross income DataType=percentage
-- MonthlyIncome=Monthly income in INR DataType=real
+- MonthlyIncome=Monthly income in USD DataType=real
 - NumberOfOpenCreditLinesAndLoans=Number of Open loans (installment like car loan or mortgage) and Lines of credit (e.g. credit cards) DataType=integer
 - NumberOfTimes90DaysLate=Number of times borrower has been 90 days or more past due. DataType=integer
 - NumberRealEstateLoansOrLines=Number of mortgage and real estate loans including home equity lines of credit DataType=integer
