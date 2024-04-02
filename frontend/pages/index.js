@@ -64,14 +64,13 @@ const HomePage = () => {
       setLoading(false);
       setData(jsonData);
 
-
-
       if (parseFloat(jsonData["SeriousDlqin2yrs"]) < 1) {
         await setStatus(true);
-        console.log('status',status);
-        console.log('jsonData',jsonData);
+      } else {
+        await setStatus(false);
       }
-      
+      console.log('status',status);
+      console.log('jsonData',jsonData);
       
     } catch (error) {
       console.error('Error fetching API data:', error);
@@ -91,7 +90,6 @@ const HomePage = () => {
       const text = await response.json();
       setExplSets(text);
       setLoading2(false);
-      console.log('text',text);
 
     } catch (error) {  
       setLoading2(false);
