@@ -180,7 +180,7 @@ const HomePage = () => {
                         </div>
                       ) : (
                         <div style={{ display: 'inline-block', borderRadius: '25px', background: '#C0FAE6', padding: '3px' }}>
-                          <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;ACCEPTED&nbsp;</H3>
+                          <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;APPROVED&nbsp;</H3>
                         </div>
                       )}
                       <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>

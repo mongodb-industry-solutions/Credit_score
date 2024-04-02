@@ -10,7 +10,6 @@ const TextWithImage = ({ items }) => {
   };
 
   const itemsJSON = JSON.parse(items);
-  console.log('itemsJSON',itemsJSON);
 
   return (
     <div>
@@ -34,7 +33,7 @@ const TextWithImage = ({ items }) => {
           <div>
             <H3>{key}</H3>
             <Body as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', overflowX: 'hidden', fontSize: '20px', fontFamily: 'sans-serif',  }} >
-              {items[key]}
+              {itemsJSON[key]}
             </Body>
           </div>
         </div>
