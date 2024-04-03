@@ -82,8 +82,8 @@ const HomePage = () => {
       const text = await response.json();
       setExplSets(text);
       setLoading2(false);
-
-      if (parseFloat(text["approvalStatus"]) == "Approved" ) {
+      console.log('text', text);
+      if (text["approvalStatus"] == "Approved" ) {
         await setStatus(true);
       } else {
         await setStatus(false);

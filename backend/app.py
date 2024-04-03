@@ -88,7 +88,7 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 - Allowed Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
-- Response length should be less than 250 words and should start with "Reason for Decision:"
+- Response length should be less than 250 words and should start with "Reason for Decision:\n"
 - Response should not be in a letter format nor should in include promtps like [Candidate's Name], [Bank Name] or others.
 
 Reason for Decision:[Reason]
