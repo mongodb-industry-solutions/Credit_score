@@ -14,8 +14,7 @@ const TextWithImage = ({ items }) => {
   if (typeof items === 'object') {
     itemsJSON = items;
   } else {
-    itemStr = JSON.stringify(items);
-    itemsJSON = JSON.parse(itemStr);
+    itemsJSON = JSON.parse(items);
   }
 
   return (

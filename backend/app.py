@@ -26,7 +26,6 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
-#print(col.find_one({}))
 vcol = client["bfsi-genai"]["cc_products"]
 llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=250, max_output_tokens=1024)
 llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
@@ -89,7 +88,8 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 - Allowed Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
-- Response length should be less than 250 words
+- Response length should be less than 250 words and should start with "Reason for Decision:"
+- Response should not be in a letter format nor should in include promtps like [Candidate's Name], [Bank Name] or others.
 
 Reason for Decision:[Reason]
 """
@@ -115,6 +115,7 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
 
         ## Recommendations=Output as Json with card name as Key and concise reasons point by point as Value:
         {{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2",...}}
+        Do not format the output as a string, return the output as a JSON object.
         """
         res = invoke_llm(recomendations_template)
         # res = llm.invoke(recomendations_template)
@@ -156,8 +157,9 @@ def get_credit_score():
     user_id = request.args.get("userId")
     pred , allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
     prompt = get_credit_score_expl_prompt(user_profile_ip, pred,allowed_credit_limit)
+    approval_status =  "Approved" if pred<0.3 else "Rejected"
     response = invoke_llm(prompt)    
-    return jsonify({"userProfile": response.content, "delinquencyStatus": str(pred), "allowedCreditLimit": allowed_credit_limit}) 
+    return jsonify({"userProfile": response.content, "delinquencyStatus": str(pred), "approvalStatus": approval_status, "allowedCreditLimit": allowed_credit_limit}) 
 
 @app.route("/product_suggestions", methods=["POST"])
 def get_product_suggestions_endpoint():

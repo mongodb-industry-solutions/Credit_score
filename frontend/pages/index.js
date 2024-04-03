@@ -63,14 +63,6 @@ const HomePage = () => {
       }
       setLoading(false);
       setData(jsonData);
-
-      if (parseFloat(jsonData["PredDlqin2yrs"]) < 0.3) {
-        await setStatus(true);
-      } else {
-        await setStatus(false);
-      }
-      console.log('status',status);
-      console.log('jsonData',jsonData);
       
     } catch (error) {
       console.error('Error fetching API data:', error);
@@ -90,6 +82,12 @@ const HomePage = () => {
       const text = await response.json();
       setExplSets(text);
       setLoading2(false);
+
+      if (parseFloat(text["approvalStatus"]) == "Approved" ) {
+        await setStatus(true);
+      } else {
+        await setStatus(false);
+      }
 
     } catch (error) {  
       setLoading2(false);
@@ -184,7 +182,7 @@ const HomePage = () => {
                         </div>
                       )}
                       <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
-                        <Tab name="Rejection explanation" style={{ zIndex: 0 }}>{textSet1WithIframe}</Tab>
+                        <Tab name="Status explanation" style={{ zIndex: 0 }}>{textSet1WithIframe}</Tab>
                         <Tab disabled={SecondTab} name="Product offerings" style={{ zIndex: 0 }}>
                           <TextWithImage items={recSets} />
                         </Tab>
