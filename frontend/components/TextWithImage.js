@@ -9,12 +9,13 @@ const TextWithImage = ({ items }) => {
     }
   };
   console.log('typeof items', typeof items);
-  console.log('items', items);
+  //console.log('items', items);
   let itemsJSON;
   if (typeof items === 'object') {
     itemsJSON = items;
-  } else {
-    itemsJSON = JSON.parse(items);
+  } else {    
+    itemsJSON = JSON.parse(items.replace(/\n/g, ''));
+    for (let key in itemsJSON) { itemsJSON[key] = itemsJSON[key].replace(/([^\\n])(-)/g, '$1\n$2'); }
   }
 
   return (

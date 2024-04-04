@@ -28,7 +28,7 @@ client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 col = client["bfsi-genai"]["credit_history"]
 vcol = client["bfsi-genai"]["cc_products"]
 llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=250, max_output_tokens=1024)
-llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.7, max_output_tokens=1024)
+llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.8, max_output_tokens=2048)
 # llm = OpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
 # llm_large= OpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
 repo_id = "hkunlp/instructor-base"
@@ -97,15 +97,26 @@ Reason for Decision:[Reason]
 """
     return prompt
 
-def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, allowed_credit_limit,thresh=0.3):
+def process_user_suggestion_prompt(recomendations_template):
+    res = invoke_llm(recomendations_template)
+    # res = llm.invoke(recomendations_template)
+    if res.content.strip().startswith("{"):
+        op = res.content.replace("""\\n""", "\n")
+        return op
+    elif res.content.startswith("```json"):
+        op = res.content.replace("```json\n", "").replace("""\n```""", "")
+        return json.loads(op)
+
+def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit,thresh=0.3):
     status = "Approved" if float(pred)<thresh else "Rejected"
-    if float(pred)<2*thresh:
+    if status == 'Approved':
+        card_suggestions,rec = get_product_suggestions(user_profile)
         recomendations_template=f"""
         ##Instruction:
         - Given the user profile and recommended credit cards that will best fit the user profile.
         - Provide reasons why each suggested credit card is adapted to the specific user.
         - When ever possible different cards should have different reasons to be suggested.
-        - The name of the card should not be an existing card name.
+        - The name of the card should be ficticious and not a real one.
 
         ## User profile:
         {user_profile}
@@ -121,21 +132,54 @@ def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, al
         {{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2",...}}
         Do not format the output as a string, return the output as a JSON object.
         """
-        res = invoke_llm(recomendations_template)
-        # res = llm.invoke(recomendations_template)
-        if res.content.strip().startswith("{"):
-            op = res.content.replace("""\\n""", "\n")
-            return op
-        elif res.content.startswith("```json"):
-            op = res.content.replace("```json\n", "").replace("""\n```""", "")
-            return json.loads(op)
+        return process_user_suggestion_prompt(recomendations_template)
     else:
-        return {"No Credit Card Recomended": "Credit Product Approval Status is Rejected"}
+        
+        card_suggestions,rec = get_product_suggestions_for_rejection(user_profile)
+        recomendations_template=f"""
+    ##Instruction:
+    - Given the user profile was rejected, recommended credit cards that will best fit the user profile.
+    - Provide reason as to why the credit card is suggested to the user for each card.
+    - In card recommendation description, mention about reduction of allowed credit limit.
+
+    ## User profile:
+    {user_profile}
+
+    ## Model Result:
+    - Credit Product Approval Status={status}
+    - Reduced Credit Limit for the user={allowed_credit_limit}*[reduction factor (float)]
+
+    ## Credit cards Suggestions:
+    {card_suggestions}
+
+    ## Recommendations=Output as Json with card name as Key and concise reasons point by point as Value:
+    {{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2",...}}
+    """
+        return process_user_suggestion_prompt(recomendations_template)
+    
+@lru_cache(100)
+def get_product_suggestions_for_rejection(user_profile):
+    user_profile_based_card_template=f"""
+##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
+- suggest card that have the usage limits, 1 reward point for appropriate spend, 50 days repayment cycle, low annual fee
+- suggest card that have the usage of word Basic, Standard, Essential, Starter, Simple, Budget, Entry-level, No-frills, Essential, Value, Standard, Basic, Economy, Core, Essential, Basic, Entry, Minimalist, No-fuss, Practical
+
+## User profile:
+{user_profile}
+
+## Recommendations with reasons point by point:
+"""
+    rec = recommender_retriever.get_relevant_documents(user_profile_based_card_template)
+    card_suggestions= ""
+    for r in rec:
+        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} card \n  Card Features:{r.page_content} +\n'
+    return card_suggestions, rec
+    
 @lru_cache(100)
 def get_product_suggestions(user_profile):
     user_profile_based_card_template=f"""
 ##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
-
+- suggest card that have the usage of word premium, co branded, travel, cashback, rewards, dining, shopping, fuel, lifestyle, entertainment, airport, lounge, golf, movie, hotel, concierge, insurance, wellness, health, fitness, luxury, exclusive, signature, platinum, gold, silver, titanium, contactless, contact-free, contact less, contact free, virtual, digital, online, offline, international, domestic, global, local, zero, no, low, minimum, maximum, high
 ## User profile:
 {user_profile}
 
@@ -171,8 +215,7 @@ def get_product_suggestions_endpoint():
     user_profile = data["userProfile"]
     allowed_credit_limt = data["allowedCreditLimit"]
     pred = data["delinquencyStatus"]
-    card_suggestions, rec = get_product_suggestions(user_profile)
-    product_recommednations = get_product_suggestions_expl_prompt(user_profile,card_suggestions, pred, allowed_credit_limt)
+    product_recommednations = get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limt)
     return jsonify({"productRecommendations": product_recommednations})
 
 if __name__ == "__main__":   # Please do not set debug=True in production
