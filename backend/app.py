@@ -134,7 +134,8 @@ def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit
         """
         return process_user_suggestion_prompt(recomendations_template)
     else:
-        
+        if float(pred)<2*thresh:
+            return {"No Credit Card Recomended": "Kindly improve your credit score, and try again later."}
         card_suggestions,rec = get_product_suggestions_for_rejection(user_profile)
         recomendations_template=f"""
     ##Instruction:
@@ -147,7 +148,6 @@ def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit
 
     ## Model Result:
     - Credit Product Approval Status={status}
-    - Reduced Credit Limit for the user={allowed_credit_limit}*[reduction factor (float)]
 
     ## Credit cards Suggestions:
     {card_suggestions}
@@ -162,7 +162,8 @@ def get_product_suggestions_for_rejection(user_profile):
     user_profile_based_card_template=f"""
 ##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
 - suggest card that have the usage limits, 1 reward point for appropriate spend, 50 days repayment cycle, low annual fee
-- suggest card that have the usage of word Basic, Standard, Essential, Starter, Simple, Budget, Entry-level, No-frills, Essential, Value, Standard, Basic, Economy, Core, Essential, Basic, Entry, Minimalist, No-fuss, Practical
+- suggest card should have a title with words like Basic, Standard, Essential, Starter, Simple, Budget, Entry-level, No-frills, Essential, Value, Standard, Basic, Economy, Core, Essential, Basic, Entry, Minimalist, No-fuss, Practical
+- suggest card should have a title without words like premium, co branded, travel, cashback, rewards, dining, shopping, fuel, lifestyle, entertainment, airport, lounge, golf, movie, hotel, concierge, insurance, wellness, health, fitness, luxury, exclusive, signature, platinum, gold, silver, titanium, contactless, contact-free, contact less, contact free, virtual, digital, online, offline, international, domestic, global, local, zero, no, low, minimum, maximum, high
 
 ## User profile:
 {user_profile}
