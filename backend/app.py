@@ -59,10 +59,12 @@ def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit, th
     status = "Approved" if pred<thresh else "Rejected"
     prompt = f"""
 ##Instruction: 
-- Taking into account the Definitions of various fields and their respective values a model is trained to predict weather a person will expericen delinquency or not in the next 2 years.
+- Taking into account the Definitions of various fields and their respective values a model is trained to predict weather a person will expericen delinquency or not in the next year.
+- Do not refer to the fileds using the column names, instead write the field names in layman language.
 - Below both the values that was input to the model and the result produced by the model are provided. 
 - As a bank employee response to the candidate, It is expected to provide a detailed reason in layman language as to why a Credit request was rejected or processed given the profile of the candidate. 
 - Also while providing reason do mention the use of automated process employed for decision making.
+- Do not mention the Credit Limit in the response, as it is an internal tool for you to get more information about the user profile.
 
 ##Definitions:
 - RevolvingUtilizationOfUnsecuredLines=Total balance on credit cards and personal lines of credit except real estate and no installment debt like car loans divided by the sum of credit limits DataType=percentage
@@ -85,7 +87,7 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 
 ## Model Result:
 - Credit Product Approval Status={status}
-- Allowed Credit Limit for the user={allowed_credit_limit}
+- Fictitious Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
 - Response length should be less than 250 words and should start with "Reason for Decision:\n"
@@ -97,11 +99,13 @@ Reason for Decision:[Reason]
 
 def get_product_suggestions_expl_prompt(user_profile, card_suggestions, pred, allowed_credit_limit,thresh=0.3):
     status = "Approved" if float(pred)<thresh else "Rejected"
-    if status == 'Approved':
+    if float(pred)<2*thresh:
         recomendations_template=f"""
         ##Instruction:
         - Given the user profile and recommended credit cards that will best fit the user profile.
-        - Provide reason as to why the credit card is suggested to the user for each card.
+        - Provide reasons why each suggested credit card is adapted to the specific user.
+        - When ever possible different cards should have different reasons to be suggested.
+        - The name of the card should not be an existing card name.
 
         ## User profile:
         {user_profile}
