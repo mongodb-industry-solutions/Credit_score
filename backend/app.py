@@ -133,7 +133,7 @@ def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit
         Do not format the output as a string, return the output as a JSON object.
         """
         return process_user_suggestion_prompt(recomendations_template)
-    elif float(pred)<2*thresh:
+    elif float(pred)>2*thresh:
             return {"No Credit Card Recomended": "Kindly improve your credit score and try again later."}
     else:
         card_suggestions,rec = get_product_suggestions_for_rejection(user_profile)
