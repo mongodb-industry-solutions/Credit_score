@@ -60,7 +60,7 @@ def get_credit_score_expl_prompt(user_profile_ip, pred, allowed_credit_limit, th
     prompt = f"""
 ##Instruction: 
 - Taking into account the Definitions of various fields and their respective values a model is trained to predict weather a person will expericen delinquency or not in the next year.
-- Do not refer to the fileds using the column names, instead write the field names in layman language.
+- Do not refer to the fileds using the column names found in the definitions below, instead write the field names in layman language.
 - Below both the values that was input to the model and the result produced by the model are provided. 
 - As a bank employee response to the candidate, It is expected to provide a detailed reason in layman language as to why a Credit request was rejected or processed given the profile of the candidate. 
 - Also while providing reason do mention the use of automated process employed for decision making.
@@ -99,12 +99,17 @@ Reason for Decision:[Reason]
 
 def process_user_suggestion_prompt(recomendations_template):
     res = invoke_llm(recomendations_template)
-    # res = llm.invoke(recomendations_template)
+    #print('res',res.content)
     if res.content.strip().startswith("{"):
         op = res.content.replace("""\\n""", "\n")
+        print('\nhere 1\n\n')
+        print('op',op)
+        print('op',type(op))
         return op
     elif res.content.startswith("```json"):
         op = res.content.replace("```json\n", "").replace("""\n```""", "")
+        print('\nhere 2\n\n')
+        print('op',op)
         return json.loads(op)
 
 def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit,thresh=0.3):
@@ -140,10 +145,10 @@ def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit
         recomendations_template=f"""
     ##Instruction:
     - Given the user profile was rejected, recommended credit cards that will best fit the user profile.
-    - Provide reason as to why the credit card is suggested to the user for each card.
-    - In card recommendation description, mention about reduction of allowed credit limit.
+    - Given the user profile was rejected, modify the information from the Credit cards Suggestions to make it an inferior product. Cheaper, less benefits and less risk for the bank if the user fails to pay back.
+    - Provide reasons as to why the credit card is suggested to the user for each card. There should be different reasons for different cards. No need to list benefits that they don't have. And there should be more than 5 reasons per card.
 
-    ## User profile:
+        ## User profile:
     {user_profile}
 
     ## Model Result:
@@ -162,8 +167,6 @@ def get_product_suggestions_for_rejection(user_profile):
     user_profile_based_card_template=f"""
 ##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
 - suggest card that have the usage limits, 1 reward point for appropriate spend, 50 days repayment cycle, low annual fee
-- suggest card should have a title with words like Basic, Standard, Essential, Starter, Simple, Budget, Entry-level, No-frills, Essential, Value, Standard, Basic, Economy, Core, Essential, Basic, Entry, Minimalist, No-fuss, Practical
-- suggest card should have a title without words like premium, co branded, travel, cashback, rewards, dining, shopping, fuel, lifestyle, entertainment, airport, lounge, golf, movie, hotel, concierge, insurance, wellness, health, fitness, luxury, exclusive, signature, platinum, gold, silver, titanium, contactless, contact-free, contact less, contact free, virtual, digital, online, offline, international, domestic, global, local, zero, no, low, minimum, maximum, high
 
 ## User profile:
 {user_profile}
@@ -173,7 +176,8 @@ def get_product_suggestions_for_rejection(user_profile):
     rec = recommender_retriever.get_relevant_documents(user_profile_based_card_template)
     card_suggestions= ""
     for r in rec:
-        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} card \n  Card Features:{r.page_content} +\n'
+        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} \n  Card Features:{r.page_content} +\n'
+    card_suggestions = replace_words(card_suggestions)
     return card_suggestions, rec
     
 @lru_cache(100)
@@ -189,8 +193,22 @@ def get_product_suggestions(user_profile):
     rec = recommender_retriever.get_relevant_documents(user_profile_based_card_template)
     card_suggestions= ""
     for r in rec:
-        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} card \n  Card Features:{r.page_content} +\n'
+        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} \n  Card Features:{r.page_content} +\n'
     return card_suggestions, rec
+
+def replace_words(text):
+    replacements = {
+        "Premium": "Standard",
+        "Titanium": "Basic",
+        "Plus": "Basic",
+        "Platinum": "Steel",
+        "Elite": "Economy",
+        "Exclusive": "Core",
+        "Infinite": "Entry"
+    }
+    for word, replacement in replacements.items():
+        text = text.replace(word, replacement)
+    return text
 
 @app.route("/hello", methods=["GET"])
 def say_hello():

@@ -15,7 +15,7 @@ const TextWithImage = ({ items }) => {
     itemsJSON = items;
   } else {    
     itemsJSON = JSON.parse(items.replace(/\n/g, ''));
-    for (let key in itemsJSON) { itemsJSON[key] = itemsJSON[key].replace(/([^\\n])(-)/g, '$1\n$2'); }
+    for (let key in itemsJSON) { itemsJSON[key] = itemsJSON[key].replace(/\.-/g, '.\n-'); }
   }
 
   return (
