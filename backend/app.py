@@ -5,7 +5,6 @@ import numpy as np
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import certifi
-from langchain.llms import OpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.vectorstores import MongoDBAtlasVectorSearch
 from langchain.embeddings import HuggingFaceInstructEmbeddings
@@ -29,8 +28,6 @@ col = client["bfsi-genai"]["credit_history"]
 vcol = client["bfsi-genai"]["cc_products"]
 llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.999, top_k=250, max_output_tokens=1024)
 llm_large = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.2, top_p=0.8, max_output_tokens=2048)
-# llm = OpenAI(temperature=0.2, model_name="gpt-3.5-turbo")
-# llm_large= OpenAI(temperature=0, model_name="gpt-3.5-turbo-16k")
 repo_id = "hkunlp/instructor-base"
 hf = HuggingFaceInstructEmbeddings(model_name=repo_id, cache_folder="tmp/")
 hf.embed_instruction = "Represent the document for retrieval of personalized credit cards:"
@@ -90,10 +87,10 @@ SeriousDlqin2yrs=Person experienced 90 days past due delinquency or worse  DataT
 - Fictitious Credit Limit for the user={allowed_credit_limit}
 
 ##Reason in step by step points as to why the credit request was rejected or processed given the profile of the candidate:
-- Response length should be less than 250 words and should start with "Reason for Decision:\n"
+- Response length should be less than 250 words.
 - Response should not be in a letter format nor should in include promtps like [Candidate's Name], [Bank Name] or others.
 
-Reason for Decision:[Reason]
+Reason for Decision:\n[Reason]
 """
     return prompt
 
@@ -165,7 +162,8 @@ def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit
 @lru_cache(100)
 def get_product_suggestions_for_rejection(user_profile):
     user_profile_based_card_template=f"""
-##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
+##Instruction: 
+- Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
 - suggest card that have the usage limits, 1 reward point for appropriate spend, 50 days repayment cycle, low annual fee
 
 ## User profile:
@@ -183,7 +181,9 @@ def get_product_suggestions_for_rejection(user_profile):
 @lru_cache(100)
 def get_product_suggestions(user_profile):
     user_profile_based_card_template=f"""
-##Instruction: Given the user profile recommended credit cards that will best fit the user profile. Provide reason as to why the credit card is suggested to the user for each card.
+##Instruction: 
+- You are a Credit Card broker and you would like to recommend the best credit card for the user based on the user profile.
+- Provide reason as to why the credit card is suggested to the user for each card.
 - suggest card that have the usage of word premium, co branded, travel, cashback, rewards, dining, shopping, fuel, lifestyle, entertainment, airport, lounge, golf, movie, hotel, concierge, insurance, wellness, health, fitness, luxury, exclusive, signature, platinum, gold, silver, titanium, contactless, contact-free, contact less, contact free, virtual, digital, online, offline, international, domestic, global, local, zero, no, low, minimum, maximum, high
 ## User profile:
 {user_profile}

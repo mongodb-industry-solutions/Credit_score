@@ -183,7 +183,7 @@ const HomePage = () => {
                       )}
                       <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
                         <Tab name="Status explanation" style={{ zIndex: 0 }}>{textSet1WithIframe}</Tab>
-                        <Tab disabled={SecondTab} name="Product offerings" style={{ zIndex: 0 }}>
+                        <Tab disabled={SecondTab} name="Product recommendations" style={{ zIndex: 0 }}>
                           <TextWithImage items={recSets} />
                         </Tab>
                       </Tabs>
