@@ -38,3 +38,16 @@ Once you have done everything, we can move on to the next part:
 
 ## Adding a Chart into your application (optional)
 
+- From Atlas UI (not compass), navigate to your "credit_history" collection.
+- Click the "Visualize Your Data" button undet the tabs.
+- Select the chart type "Number"
+- drag and drop MonthlyIncome.
+- Choose "Median" on the aggregation
+- Click on "save and close" on the top right corner.
+
+Your report has been created now next we need to modify the access rights:
+- From the Charts UI, click on the "Embedding" tab on the sidebar.
+- find your report and click on the settings button on the right part of the screen
+- Activate the "Unauthenticated access"
+- At the bottom you will have the emdeded code to add it to your website. Copy the URL on it and past it on the NEXT_PUBLIC_CHART_URL variable on the location_of_your_repo>/Credit_score/frontend/.env file.
+

@@ -15,7 +15,6 @@ Next, please make sure to add a .env file in the folder <location_of_your_repo>/
 
 ```md
 MONGO_CONNECTION_STRING=<Your_connection_string>
-MONGODB_DB=AML_Fraud_detection
 OPENAI_API_KEY=<Your_OpenAI_api_key>
 GOOGLE_API_KEY=<Your_OpenAI_api_key>
 MONGODB_DB=bfsi-genai 
@@ -32,20 +31,18 @@ python3 app.py
 # or if you are running it on a server
 pm2 start app.py --interpreter=python3
 ```
-> [!Warning]
+> [!Note]
 > If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.
 
 You should have two APIs:
 - http://localhost:5000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
 - http://localhost:5000/product_suggestions
 
-
-![image](./Recomendations.png)
-
-
+As a reminder, in this demo we use Both AI as well as genAI. Bellow you can see the Architeture of the first API. Simply put, we generate a custom prompt by enriching the existing information on the MongoDB database with the ML algorithm that we trained prior. This is then sent to the LLM to generate the explaination for the approoval/rejection of the User's application.
 ![image](./Explainations.png)
 
-
+The second API, is slightly more complicated. Indeed, the Users profile from the previous API are sent into the second. Then a multi query retriever function allows to effectivelly retrieve relevant information from our chumked credit card information database, before getting formated and refined by the LLM.
+![image](./Recomendations.png)
 
 Once you have done everything, we can move on to the next part:
 - [Installation of the frontend](../frontend/)
