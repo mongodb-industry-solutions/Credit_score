@@ -1,36 +1,53 @@
 # GenAI Credit Scoring Demo
 
-Credit scoring has always faced persistent challenges, from biases and discrimination to limitations in adapting to evolving economic landscapes. The conventional reliance on historical credit data, often leading to biased outcomes. This prompted a paradigm shift towards leveraging artificial intelligence (AI). In this repository we are using a Machine learning algorithm to create a customer/user banking profile by combining relevant data points. Below you can see the architectural diagram of the data processing pipeline for the predicting probability of delinquency and credit scoring.
+Credit scoring has always faced persistent challenges, from biases and discrimination to limitations in adapting to evolving economic landscapes. The challenges of traditional models are being overcome through the adoption of alternative credit scoring methods by offering a more inclusive and nuanced assessment of creditworthiness. This prompted a paradigm shift towards leveraging artificial intelligence (AI) and alternative data to reshape the foundations of credit scoring. In this solution, we are using a machine learning algorithm to create a customer/user banking profile by combining relevant data points. Below you can see the architectural diagram of the data processing pipeline for the predicting probability of delinquency and credit scoring.
 
 ![image](./MLarch.png)
 > [!Note]
-> The notebooks present on this image are the ones coming from [this repo](https://github.com/ashwin-gangadhar-mdb/mdb-bfsi-genai/tree/main/notebooks). You do not need them to proceed with the demo's installation.
+> The notebooks present in this image are the ones coming from [this repo](https://github.com/ashwin-gangadhar-mdb/mdb-bfsi-genai/tree/main/notebooks). You do not need them to proceed with the demo's installation.
 
 If you want to delve into more detail, our blog sheds light on credit scoring fundamentals, challenges with traditional systems, and the role of AI in creating more inclusive models. 
 
 [Read the Blog!](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai)
 
-This GitHub repository presents a demo in which you will be able to log on to a client that has already submitted a Credit card application. Its main functionality is to be able for the customer to use generative AI (GenAI) to get a detailed explanation on why the application was rejected. We will also leverage MongoDB vector search capabilities to provide a set of different cards that might be more adapted for the customer.
+This GitHub repository presents a demo in which you will be able to log on to a client that has already submitted a Credit card application. This approach can be applied to other credit products – like personal loans, mortgages, corporate loans, and trade finance credit lines – and their applications without necessarily confining them to a credit card product only. Its main functionality is for the customer to use generative AI (GenAI) to get a detailed explanation of why the application was rejected. We will also leverage MongoDB vector search capabilities to provide recommendations of different cards that might be more adapted for the customer.
 
 > [!Warning]
 > This demo uses LLMs, we will be using Google Gemini and therefore will need an API Key, which is not included in here. You can also decide to change to an OpenAI model but will require some light code changes and an OpenAI API Key.
 
 ## Installation of the Demo
 
-The installation is divided into 4:
+The installation is divided into five:
 - [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/)
 - [Insert the two file in ./data folder with mongoDB compass on a database called "bfsi-genai"](https://www.mongodb.com/docs/compass/current/documents/insert/)
+- Create your own [search index](https://www.mongodb.com/docs/atlas/atlas-search/create-index/) called "default" on the cc_products collection.
+
+```json
+{
+  "mappings": {
+    "dynamic": true,
+    "fields": {
+      "embedding": [
+        {
+          "dimensions": 768,
+          "similarity": "euclidean",
+          "type": "knnVector"
+        }
+      ]
+    }
+  }
+}
+```
 - [Installation of the backend](./backend/)
 - [Installation of the frontend](./frontend/)
 
 ## Summary
 
-This demonstration serves as an interesting example for clearing transactions using innovative technologies such as OpenAI embeddings and MongoDB search capabilities.
+This demonstration serves as an interesting example for how the adoption of alternative credit scoring methods, leveraging artificial intelligence, can reshape traditional credit scoring experience.
 
 In the previous sections, we explored how to:
-- Create your own dataset
-- Set up your own microservice with MongoDB's app services
-- Set up your collection for both full-text and vector search.
+- To insert your own dataset
+- Set up your collection for vector search.
 
 Are you prepared to harness these capabilities for your projects? Should you encounter any roadblocks or have questions, our vibrant [developer forums](https://www.mongodb.com/community/forums/) are here to support you every step of the way. Or if you prefer to contact us directly at [industry.solutions@mongodb.com](mailto:industry.solutions@mongodb.com).
 
@@ -40,7 +57,6 @@ You can also dive into the following resources:
 ## Disclaimer
 
 This product is not a MongoDB official product. Use at your own risk!
-
 
 ## Authors
 

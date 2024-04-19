@@ -1,6 +1,6 @@
 # Installation of the frontend
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [create-next-app](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ NEXT_PUBLIC_CHART_URL=<Your_CHART_URL>
 ```
 
 > [!Note]
-> If you want if the backend was deployed into a server, then you have to put the server's IP address in the NEXT_PUBLIC_API_URL above.
+> if the backend was deployed into a server then you have to put the server's IP address in the NEXT_PUBLIC_API_URL above.
 > If you want to display a chart here you can do so by following the optional instructions down below.
 
 Lastly, run the development server:
@@ -49,5 +49,5 @@ Your report has been created now next we need to modify the access rights:
 - From the Charts UI, click on the "Embedding" tab on the sidebar.
 - find your report and click on the settings button on the right part of the screen
 - Activate the "Unauthenticated access"
-- At the bottom you will have the embedded code to add it to your website. Copy the URL on it and past it on the NEXT_PUBLIC_CHART_URL variable on the location_of_your_repo>/Credit_score/frontend/.env file.
+- At the bottom you will have the embedded code to add it to your website. Copy the URL on it and paste it on the NEXT_PUBLIC_CHART_URL variable on the location_of_your_repo>/Credit_score/frontend/.env file.
 
