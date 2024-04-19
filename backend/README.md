@@ -22,7 +22,7 @@ MONGODB_DB=bfsi-genai
 > [!Warning]
 > You only need to populate one of the API keys depending on which one you chose. As a reminder you can also decide to use OpenAI  but will require some light code changes. You will also need to use the file OpenAI.py instead of app.py. 
 
-Lastly, run the development server:
+Lastly, run the bankend services:
 
 ```bash
 python app.py
@@ -38,10 +38,10 @@ You should have two APIs:
 - http://localhost:5000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
 - http://localhost:5000/product_suggestions
 
-As a reminder, in this demo we use Both AI as well as genAI. Bellow you can see the Architeture of the first API. Simply put, we generate a custom prompt by enriching the existing information on the MongoDB database with the ML algorithm that we trained prior. This is then sent to the LLM to generate the explaination for the approoval/rejection of the User's application.
+As a reminder, in this demo we use Both AI as well as genAI. Below you can see the Architecture of the first API. Simply put, we generate a custom prompt by enriching the existing information on the MongoDB database with the ML algorithm that we trained prior. This is then sent to the LLM to generate the explanation for the approval/rejection of the User's application.
 ![image](./Explainations.png)
 
-The second API, is slightly more complicated. Indeed, the Users profile from the previous API are sent into the second. Then a multi query retriever function allows to effectivelly retrieve relevant information from our chumked credit card information database, before getting formated and refined by the LLM.
+The second API is slightly more complicated. Indeed, the Users profile from the previous API is sent into the second. Then a [multi query retriever](https://python.langchain.com/docs/modules/data_connection/retrievers/MultiQueryRetriever/) function allows us to effectively retrieve relevant information from our chunked credit card information database, before getting formatted and refined by the LLM.
 ![image](./Recomendations.png)
 
 Once you have done everything, we can move on to the next part:
