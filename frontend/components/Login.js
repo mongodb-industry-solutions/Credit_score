@@ -5,6 +5,7 @@ import { H2 } from '@leafygreen-ui/typography';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import { Body }  from '@leafygreen-ui/typography';
 import Button  from '@leafygreen-ui/button';
+import axios from 'axios';
 
 const LoginPage = () => {
   const [clientId, setClientId] = useState('');
@@ -18,14 +19,35 @@ const LoginPage = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = () => {
+  const handleLogin = (event) => {
+    event.preventDefault();
+    console.log(clientId, password)
     if (clientId.trim() === '' || password.trim() === '') {
       alert('Please enter both Client ID and Password');
     } else {
-      localStorage.setItem('clientId', clientId);
-      window.location.href = '/';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL + '/login';
+      axios.post(apiUrl, {
+        userId: clientId,
+        password: password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+        localStorage.setItem('clientId', clientId);
+        window.location.href = '/';
+      })
+      .catch(error => {
+        console.error(error);
+
+        
+      });
     }
   };
+    
+  
 
   const styles = {
     container: {

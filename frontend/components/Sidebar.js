@@ -2,21 +2,97 @@
 
 import React, { useState } from 'react';
 import styles from '../styles/sidebar.module.css';
-import { H3,Body,Subtitle }  from '@leafygreen-ui/typography';
+import { H3, Body, Subtitle } from '@leafygreen-ui/typography';
 import { NumberInput } from '@leafygreen-ui/number-input';
-import Button  from '@leafygreen-ui/button';
+import Button from '@leafygreen-ui/button';
 import Popup from '../components/Popup';
-import axios from 'axios';  
+import axios from 'axios';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import ProfileSlider from '../components/ProfileSlider';
 
+// Name
+// Age
+// Occupation
+// Annual_Income
+// Monthly_Inhand_Salary
+// Delay_from_due_date
+// Num_of_Delayed_Payment
+// Credit_Mix
+// Credit_Utilization_Ratio
+// Type_of_Loan
+// Monthly_Balance
+// Payment_Behaviour
+
+// Outstanding_Debt 0.1606545
+// Interest_Rate 0.14227411
+// Annual_Income 0.107903264
+// Monthly_Rental_Commitment 0.07572761
+// Monthly_Inhand_Salary 0.057784867
+// Num_of_Delayed_Payment 0.019657858
+// Delay_from_due_date 0.013122446
+// Num_Bank_Accounts 0.01130122
+// Num_Credit_Card 0.010898941
+// Num_Credit_Inquiries 0.008201968
+// Total_EMI_per_month 0.0059829
+// Changed_Credit_Limit 0.0058596977
+// Num_of_Loan 0.0036665471
+// Payment_Behaviour 0.0016400967
 
 
 const Sidebar = ({ profileInfo }) => {
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const [Age, setAge] = useState(null);
-  const [Income, setIncome] = useState(null);
-  const [Dependents, setDependents] = useState(null);
-  const [Portfolio, setPortfolio] = useState(null);
-  const [Investments, setInvestments] = useState(null);
+  console.log(profileInfo);
+  const [Name, setName] = useState(profileInfo.Name);
+  const [Occupation, setOccupation] = useState(profileInfo.Occupation);
+  const [Age, setAge] = useState(profileInfo.Age);
+  const [Income, setIncome] = useState(profileInfo.Monthly_Inhand_Salary);
+  const [Annual_Income, setAnnual_Income] = useState(profileInfo.Annual_Income);
+  const [Credit_Mix, setCredit_Mix] = useState(profileInfo.Credit_Mix);
+  const [Credit_Utilization_Ratio, setCredit_Utilization_Ratio] = useState(profileInfo.Credit_Utilization_Ratio);
+  const [Type_of_Loan, setType_of_Loan] = useState(profileInfo.Type_of_Loan);
+  const [Monthly_Balance, setMonthly_Balance] = useState(profileInfo.Monthly_Balance);
+  const [Payment_Behaviour, setPayment_Behaviour] = useState(profileInfo.Payment_Behaviour);
+  const [Interest_Rate, setInterest_Rate] = useState(profileInfo.Interest_Rate);
+  const [Outstanding_Debt, setOutstanding_Debt] = useState(profileInfo.Outstanding_Debt);
+  const [Num_Credit_Card, setNum_Credit_Card] = useState(profileInfo.Num_Credit_Card);
+  const [Num_Bank_Accounts, setNum_Bank_Accounts] = useState(profileInfo.Num_Bank_Accounts);
+  const [Num_Delayed_Payments, setNumOfDelayedPayments] = useState(profileInfo.Num_of_Delayed_Payment);
+  const [Total_EMI_per_month, setTotal_EMI_per_month] = useState(profileInfo.Total_EMI_per_month);
+  const [Monthly_Inhand_Salary, setMonthly_Inhand_Salary] = useState(profileInfo.Monthly_Inhand_Salary);
+  const [Monthly_Rental_Commitment, setMonthlyRentalCommitment] = useState(profileInfo.Monthly_Rental_Commitment);
+
+
+  const setters = {
+    age: setAge,
+    income: setIncome,
+    annualIncome: setAnnual_Income,
+    creditMix: setCredit_Mix,
+    creditUtilizationRatio: setCredit_Utilization_Ratio,
+    typeOfLoan: setType_of_Loan,
+    monthlyBalance: setMonthly_Balance,
+    paymentBehaviour: setPayment_Behaviour,
+    interestRate: setInterest_Rate,
+    outstandingDebt: setOutstanding_Debt,
+    numCreditCard: setNum_Credit_Card,
+    numBankAccounts: setNum_Bank_Accounts,
+    numDelayedPayments: setNumOfDelayedPayments,
+    totalEMIperMonth: setTotal_EMI_per_month,
+    monthlyInhandSalary: setMonthly_Inhand_Salary,
+    monthlyRentalCommitment: setMonthlyRentalCommitment
+  };
+
+  const defaultSliderStyle = {
+    track: { backgroundColor: 'green' },
+    handle: { borderColor: 'white', backgroundColor: 'black' },
+  };
+
+  const handleSliderChange = (event, param) => {
+    const setter = setters[param];
+    if (setter) {
+      setter(event);
+    }
+  };
 
   const handleClick = () => {
     setPopupOpen(true);
@@ -25,48 +101,51 @@ const Sidebar = ({ profileInfo }) => {
   const handleClosePopup = () => {
     setPopupOpen(false);
   };
-  
+
   const handleAge = (event) => {
     const { value } = event.target;
     setAge(value);
   };
-  
+
   const handleIncome = (event) => {
     const { value } = event.target;
     setIncome(value);
   };
-  
+
   const handleDependents = (event) => {
     const { value } = event.target;
     setDependents(value);
   };
-  
+
   const handlePortfolio = (event) => {
     const { value } = event.target;
     setPortfolio(value);
   };
-  
+
   const handleInvestments = (event) => {
     const { value } = event.target;
     setInvestments(value);
   };
-  
+
+
 
   const handleSubmit = async () => {
-    
+
     const userData = {
-      ...(Age !== null && { "age": parseInt(Age, 10) }),
-      ...(Income !== null && { "MonthlyIncome": parseInt(Income, 10) }),
-      ...(Dependents !== null && { "NumberOfDependents": parseInt(Dependents, 10) }),
-      ...(Portfolio !== null && { "NumberOfOpenCreditLinesAndLoans": parseInt(Portfolio, 10) }),
-      ...(Investments !== null && { "NumberRealEstateLoansOrLines": parseInt(Investments, 10) }),
+      ...(Monthly_Rental_Commitment !== null && { "Monthly_Rental_Commitment": parseFloat(Monthly_Rental_Commitment) }),
+      ...(Outstanding_Debt !== null && { "Outstanding_Debt": parseFloat(Outstanding_Debt) }),
+      ...(Num_Credit_Card !== null && { "Num_Credit_Card": parseInt(Num_Credit_Card, 10) }),
+      ...(Num_Bank_Accounts !== null && { "Num_Bank_Accounts": parseInt(Num_Bank_Accounts, 10) }),
+      ...(Total_EMI_per_month !== null && { "Total_EMI_per_month": parseFloat(Total_EMI_per_month) }),
+      ...(Monthly_Inhand_Salary !== null && { "Monthly_Inhand_Salary": parseFloat(Monthly_Inhand_Salary) }),
+      ...(Num_Delayed_Payments !== null && { "Num_Delayed_Payments": parseInt(Num_Delayed_Payments, 100) }),
     };
     console.log('Submitted user data:', userData);
 
     const clientId = localStorage.getItem('clientId');
-    const filter = {"Unnamed: 0":parseInt(clientId, 10)}
+    const filter = { "Customer_ID": parseInt(clientId, 10) }
 
-    const body = { "filter":filter, "update": { $set: userData } };
+    const body = { "filter": filter, "update": { $set: userData } };
     console.log('body:', body);
 
     const response = await axios.post('../api/updateOne', body);
@@ -78,88 +157,131 @@ const Sidebar = ({ profileInfo }) => {
       window.location.reload();
     } else {
       console.log('Record updated unsuccessfully:', response.data);
-    }    
+    }
   }
 
-  
+
   return (
-  <div>
-    {isPopupOpen && <div className="header-backdrop" />}
-    {isPopupOpen && <div className="button-backdrop" />}
-    <div className={styles.sidebar}>
-      <img className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
-      <div className={styles.profileDetails}>
-      {profileInfo && ( 
-          <>
-            <div><H3 className={styles.profileItem}>Customer ID: {profileInfo['Unnamed: 0']}</H3> </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Age:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.age}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Monthly income:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>${profileInfo.MonthlyIncome}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Number of Dependents:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.NumberOfDependents}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Credit Portfolio:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.NumberOfOpenCreditLinesAndLoans}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Property Investments:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.NumberRealEstateLoansOrLines}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Debt Ratio:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.DebtRatio}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Unsecured Credit Line Use:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.RevolvingUtilizationOfUnsecuredLines}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Number of short payment delays:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo['NumberOfTime30-59DaysPastDueNotWorse']}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Number of medium payment delays:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo['NumberOfTime60-89DaysPastDueNotWorse']}</Body>
-            </div>
-            <div className={styles.profileItem}>
-              <Subtitle>Number of long payment delays:&nbsp;</Subtitle>
-              <Body baseFontSize={16}>{profileInfo.NumberOfTimes90DaysLate}</Body>
+    <div>
+      {isPopupOpen && <div className="header-backdrop" />}
+      {isPopupOpen && <div className="button-backdrop" />}
+      <div className={styles.sidebar}>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: "10%" }}>
+          <img className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
+          {profileInfo && (
+            <div style={{ marginTop: "10%" }} >
+              <H3> {profileInfo.Name}</H3>
+              <Subtitle> {profileInfo.Occupation}</Subtitle>
+              <Subtitle> {profileInfo.Age} years</Subtitle>
+              <Subtitle >{profileInfo.Customer_ID}</Subtitle>
             </div>
 
-            <Button size={'default'} baseFontSize={16} onClick={handleClick} > Edit profile </Button>
-            <Popup isOpen={isPopupOpen} onClose={handleClosePopup}>
-              <H3 style={{ marginTop: '15px',marginBottom: '10px', }}>Editing your profile</H3>
-              <form>
+          )}
+        </div>
+        <div className={styles.profileDetails}>
+          {profileInfo && (
+            <>
+
               <div className={styles.profileItem}>
-                <NumberInput label="Age:" placeholder="Age" onChange={handleAge} value={Age}/>
+                <Body style={{ width: "20%" }}><strong>Monthly Rentals:&nbsp; </strong></Body>
+                <Slider onChange={(event) => handleSliderChange(event, 'monthlyRentalCommitment')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Monthly_Rental_Commitment} style={{ width: "55%" }} 
+                  min={0} max={Annual_Income}/>
+                <Body baseFontSize={9} style={{ width: "10%" }}>${Monthly_Rental_Commitment.toFixed(0)}</Body>
               </div>
+
               <div className={styles.profileItem}>
-                <NumberInput label="Monthly income:" placeholder="Monthly income" onChange={handleIncome} value={Income}/>
+                <Body style={{ width: "20%" }}><strong>Outstanding Debt:&nbsp;</strong></Body>
+                <Slider max={10000} onChange={(event) => handleSliderChange(event, 'outstandingDebt')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Outstanding_Debt} style={{ width: "55%" }} 
+                  min={0} max={999999} />
+                <Body baseFontSize={9} style={{ width: "10%" }}>${Outstanding_Debt.toFixed(0)}</Body>
               </div>
+
+
               <div className={styles.profileItem}>
-                <NumberInput label="Number of Dependents:" placeholder="Number of Dependents" onChange={handleDependents} value={Dependents}/>
+                <Body style={{ width: "20%" }}><strong>Num Credit Card:&nbsp;</strong></Body>
+                <Slider max={20} onChange={(event) => handleSliderChange(event, 'numCreditCard')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Num_Credit_Card} style={{ width: "55%" }} 
+                  min={0} max={99} />
+                <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Credit_Card.toFixed(0)}</Body>
               </div>
+
               <div className={styles.profileItem}>
-                <NumberInput label="Credit Portfolio:" placeholder="Credit Portfolio" onChange={handlePortfolio} value={Portfolio}/>
+                <Body style={{ width: "20%" }}><strong>Num Bank Accounts:&nbsp;</strong></Body>
+                <Slider max={20} onChange={(event) => handleSliderChange(event, 'numBankAccounts')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Num_Bank_Accounts} style={{ width: "55%" }} 
+                  min={0} max={99} />
+                <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Bank_Accounts.toFixed(0)}</Body>
               </div>
+
               <div className={styles.profileItem}>
-                <NumberInput label="Property Investments:" placeholder="Property Investments" onChange={handleInvestments} value={Investments}/>
-              </div>  
-              <Button size={'default'} baseFontSize={16} onClick={handleSubmit} className={styles.submit}> Submit </Button>
-              </form>
-            </Popup>
-          </>
-        )}
+                <Body style={{ width: "20%" }}><strong>Total EMI per month:&nbsp;</strong></Body>
+                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'totalEMIperMonth')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Total_EMI_per_month} style={{ width: "55%" }} 
+                  min={0} max={9999}/>
+                <Body baseFontSize={9} style={{ width: "10%" }}>${Total_EMI_per_month.toFixed(0)}</Body>
+              </div>
+
+              <div className={styles.profileItem}>
+                <Body style={{ width: "20%" }}><strong>Monthly Inhand Salary:&nbsp;</strong></Body>
+                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'monthlyInhandSalary')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Monthly_Inhand_Salary} style={{ width: "55%" }} 
+                  min={0} max={99999}/>
+                <Body baseFontSize={9} style={{ width: "10%" }}>${Monthly_Inhand_Salary.toFixed(0)}</Body>
+              </div>
+
+              <div className={styles.profileItem}>
+                <Body style={{ width: "20%" }}><strong>Num of Delayed Payments:&nbsp;</strong></Body>
+                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'numDelayedPayments')}
+                  styles={defaultSliderStyle}
+                  defaultValue={Num_Delayed_Payments} style={{ width: "55%" }} 
+                  min={0} max={999}/>
+                <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Delayed_Payments}</Body>
+              </div>
+
+              <br></br>
+              <br></br>
+              <div className={styles.profileItem}>
+                <Body style={{ width: "25%" }}><strong>Credit Mix:&nbsp;</strong></Body>
+                <Body baseFontSize={9} style={{ width: "70%" }}><h3>{Credit_Mix}</h3></Body>
+              </div>
+
+              <div className={styles.profileItem}>
+                <Body style={{ width: "25%" }}><strong>Type of Loan:&nbsp;</strong></Body>
+                <Body baseFontSize={9} style={{ width: "70%" }}><h3>{Type_of_Loan.replaceAll(",", ", ")}</h3></Body>
+              </div>
+
+              <div className={styles.profileItem}>
+                <Body style={{ width: "25%" }}><strong>Payment Behaviour:&nbsp;</strong></Body>
+                <Body baseFontSize={9} style={{ width: "70%" }}><h3>{Payment_Behaviour.replaceAll('_', " ")}</h3></Body>
+              </div>
+
+
+              <div className={styles.profileItem}>
+                <Button style={{
+                  marginTop: "35px",
+                  width: "80%",
+                }} onClick={handleSubmit}> Save Profile </Button>
+              </div>
+
+              <div style={{ position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "row"}}>
+                <Body style={{ color: "dark-green", margin: '5px' }}> Made with &hearts; by </Body>
+                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Ashwin Gangadhar</a> </Body>
+                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Paul Claret</a></Body>
+                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Utsav Talwar</a></Body>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
     const client = await clientPromise;
     const db = client.db('bfsi-genai');
-    const coll = db.collection('credit_history');
+    const coll = db.collection('user_data');
 
     const data = await coll.findOne(filter);
 
