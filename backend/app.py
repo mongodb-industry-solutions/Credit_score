@@ -43,11 +43,11 @@ feature_importance = "\n".join(i for i in list(map(lambda x:f"Columns:{x[0]}  Pr
 
 def get_user_profile(user_id):
     user_id_df = pd.DataFrame.from_records((col.find({"Unnamed: 0":int(user_id)}, {"_id":0,"Unnamed: 0":0, "SeriousDlqin2yrs":0,"PredDlqin2yrs":0})))
-    print(user_id_df)
+    #print(user_id_df)
     user_profile_ip = user_id_df.to_dict(orient="records")[0]
-    print(user_profile_ip)
+    #print(user_profile_ip)
     pred = model.predict_proba(user_id_df)[:,1][0]
-    print(f">>>>>>>>>>>>>>>>>>>>>> Monthly Income : {user_id_df.MonthlyIncome}")
+    #print(f">>>>>>>>>>>>>>>>>>>>>> Monthly Income : {user_id_df.MonthlyIncome}")
     allowed_credit_limit = int(np.ceil(user_id_df.MonthlyIncome*6*(1-pred)))
     logging.info(f"Allowed Credit Limit for the user: {allowed_credit_limit}")
     return pred, allowed_credit_limit, user_profile_ip
@@ -96,17 +96,11 @@ Reason for Decision:\n[Reason]
 
 def process_user_suggestion_prompt(recomendations_template):
     res = invoke_llm(recomendations_template)
-    #print('res',res.content)
     if res.content.strip().startswith("{"):
         op = res.content.replace("""\\n""", "\n")
-        print('\nhere 1\n\n')
-        print('op',op)
-        print('op',type(op))
         return op
     elif res.content.startswith("```json"):
         op = res.content.replace("```json\n", "").replace("""\n```""", "")
-        print('\nhere 2\n\n')
-        print('op',op)
         return json.loads(op)
 
 def get_product_suggestions_expl_prompt(user_profile, pred, allowed_credit_limit,thresh=0.3):
