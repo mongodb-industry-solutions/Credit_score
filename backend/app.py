@@ -232,4 +232,4 @@ def get_product_suggestions_endpoint():
     return jsonify({"productRecommendations": product_recommednations})
 
 if __name__ == "__main__":   # Please do not set debug=True in production
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
