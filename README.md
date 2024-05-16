@@ -3,10 +3,11 @@
 Credit scoring has always faced persistent challenges, from biases and discrimination to limitations in adapting to evolving economic landscapes. The challenges of traditional models are being overcome through the adoption of alternative credit scoring methods by offering a more inclusive and nuanced assessment of creditworthiness. This prompted a paradigm shift towards leveraging artificial intelligence (AI) and alternative data to reshape the foundations of credit scoring. In this solution, we are using a machine learning algorithm to create a customer/user banking profile by combining relevant data points. Below you can see the architectural diagram of the data processing pipeline for the predicting probability of delinquency and credit scoring.
 
 ![image](./MLarch.png)
+
 > [!Note]
 > The notebooks present in this image are the ones coming from [this repo](https://github.com/ashwin-gangadhar-mdb/mdb-bfsi-genai/tree/main/notebooks). You do not need them to proceed with the demo's installation.
 
-If you want to delve into more detail, our blog sheds light on credit scoring fundamentals, challenges with traditional systems, and the role of AI in creating more inclusive models. 
+If you want to delve into more detail, our blog sheds light on credit scoring fundamentals, challenges with traditional systems, and the role of AI in creating more inclusive models.
 
 [Read the Blog!](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai)
 
@@ -18,6 +19,7 @@ This GitHub repository presents a demo in which you will be able to log on to a 
 ## Installation of the Demo
 
 The installation is divided into five:
+
 - [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/)
 - [Insert the two file in ./data folder with mongoDB compass on a database called "bfsi-genai"](https://www.mongodb.com/docs/compass/current/documents/insert/)
 - Create your own [search index](https://www.mongodb.com/docs/atlas/atlas-search/create-index/) called "default" on the cc_products collection.
@@ -38,20 +40,47 @@ The installation is divided into five:
   }
 }
 ```
+
 - [Installation of the backend](./backend/)
 - [Installation of the frontend](./frontend/)
+
+### Build the Application with Docker
+
+To build the Docker images and start the services, run the following command:
+
+```
+make build
+```
+
+### Stopping the Application
+
+To stop all running services, use the command:
+
+```
+make stop
+```
+
+### Cleaning Up
+
+To remove all images and containers associated with the application, execute:
+
+```
+make clean
+```
 
 ## Summary
 
 This demonstration serves as an interesting example for how the adoption of alternative credit scoring methods, leveraging artificial intelligence, can reshape traditional credit scoring experience.
 
 In the previous sections, we explored how to:
+
 - To insert your own dataset
 - Set up your collection for vector search.
 
 Are you prepared to harness these capabilities for your projects? Should you encounter any roadblocks or have questions, our vibrant [developer forums](https://www.mongodb.com/community/forums/) are here to support you every step of the way. Or if you prefer to contact us directly at [industry.solutions@mongodb.com](mailto:industry.solutions@mongodb.com).
 
-You can also dive into the following resources: 
+You can also dive into the following resources:
+
 - [Reducing Bias in Credit Scoring with Generative Al](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai)
 
 ## Disclaimer
