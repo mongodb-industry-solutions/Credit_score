@@ -3,6 +3,7 @@ import React from 'react';
 import styles from '../styles/header.module.css';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import { H2,Body }  from '@leafygreen-ui/typography';
+import Link  from 'next/link';
 
 function Header() {
   return (
@@ -14,7 +15,7 @@ function Header() {
         <H2>Credit Scoring</H2>
       </div>
       <div className={styles["logout-container"]}>
-      <a href="/login"><Body>Log Out</Body></a>
+      <Link href="/login"><Body>Log Out</Body></Link>
       </div>
     </div>
 

@@ -7,6 +7,7 @@ import { H1, H2, H3, Body } from '@leafygreen-ui/typography';
 import TextWithImage from '../components/TextWithImage';
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
 import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
+import Image from 'next/image';
 
 
 const HomePage = () => {
@@ -135,7 +136,7 @@ const HomePage = () => {
   } };
 
   /*
-        <img
+        <Image
             src={key === "No Connexion" ? '/images/Error.png' : '/images/creditCard.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
@@ -147,7 +148,7 @@ const HomePage = () => {
     <div>
       {error ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-          <img
+          <Image
             src={'/images/Error.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '40px', borderRadius: '10px', marginTop: '10px' }}

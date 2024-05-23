@@ -1,5 +1,6 @@
 import React from 'react';
 import { Body, H3 } from '@leafygreen-ui/typography';
+import Image from 'next/image';
 
 const TextWithImage = ({ items }) => {
 
@@ -32,7 +33,7 @@ const TextWithImage = ({ items }) => {
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
           }}
         >
-          <img
+          <Image
             src={key === "No Credit Card Recomended" ? '/images/Error.png' : '/images/creditCard.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}

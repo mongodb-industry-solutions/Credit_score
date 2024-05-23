@@ -15,8 +15,7 @@ Next, please make sure to add a .env file in the folder <location_of_your_repo>/
 
 ```md
 MONGO_CONNECTION_STRING=<Your_connection_string>
-OPENAI_API_KEY=<Your_OpenAI_api_key>
-GOOGLE_API_KEY=<Your_OpenAI_api_key>
+FIREWORKS_API_KEY=<Your_FIREWORKS_api_key>
 MONGODB_DB=bfsi-genai 
 ```
 > [!Warning]
@@ -25,11 +24,11 @@ MONGODB_DB=bfsi-genai
 Lastly, run the bankend services:
 
 ```bash
-python app.py
+python credit_score_demo.py
 # or
-python3 app.py
+python3 credit_score_demo.py
 # or if you are running it on a server
-pm2 start app.py --interpreter=python3
+pm2 start credit_score_demo.py --interpreter=python3
 ```
 > [!Note]
 > If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.

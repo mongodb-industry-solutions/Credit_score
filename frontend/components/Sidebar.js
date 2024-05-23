@@ -10,6 +10,9 @@ import axios from 'axios';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import ProfileSlider from '../components/ProfileSlider';
+import Image from 'next/image';
+import Link  from 'next/link';
+
 
 // Name
 // Age
@@ -127,8 +130,6 @@ const Sidebar = ({ profileInfo }) => {
     setInvestments(value);
   };
 
-
-
   const handleSubmit = async () => {
 
     const userData = {
@@ -167,7 +168,7 @@ const Sidebar = ({ profileInfo }) => {
       {isPopupOpen && <div className="button-backdrop" />}
       <div className={styles.sidebar}>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: "10%" }}>
-          <img className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
+          <Image className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
           {profileInfo && (
             <div style={{ marginTop: "10%" }} >
               <H3> {profileInfo.Name}</H3>
@@ -196,7 +197,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={10000} onChange={(event) => handleSliderChange(event, 'outstandingDebt')}
                   styles={defaultSliderStyle}
                   defaultValue={Outstanding_Debt} style={{ width: "55%" }} 
-                  min={0} max={999999} />
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>${Outstanding_Debt.toFixed(0)}</Body>
               </div>
 
@@ -206,7 +207,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={20} onChange={(event) => handleSliderChange(event, 'numCreditCard')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Credit_Card} style={{ width: "55%" }} 
-                  min={0} max={99} />
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Credit_Card.toFixed(0)}</Body>
               </div>
 
@@ -215,7 +216,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={20} onChange={(event) => handleSliderChange(event, 'numBankAccounts')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Bank_Accounts} style={{ width: "55%" }} 
-                  min={0} max={99} />
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Bank_Accounts.toFixed(0)}</Body>
               </div>
 
@@ -224,7 +225,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={100000} onChange={(event) => handleSliderChange(event, 'totalEMIperMonth')}
                   styles={defaultSliderStyle}
                   defaultValue={Total_EMI_per_month} style={{ width: "55%" }} 
-                  min={0} max={9999}/>
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>${Total_EMI_per_month.toFixed(0)}</Body>
               </div>
 
@@ -233,7 +234,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={100000} onChange={(event) => handleSliderChange(event, 'monthlyInhandSalary')}
                   styles={defaultSliderStyle}
                   defaultValue={Monthly_Inhand_Salary} style={{ width: "55%" }} 
-                  min={0} max={99999}/>
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>${Monthly_Inhand_Salary.toFixed(0)}</Body>
               </div>
 
@@ -242,7 +243,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider max={100000} onChange={(event) => handleSliderChange(event, 'numDelayedPayments')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Delayed_Payments} style={{ width: "55%" }} 
-                  min={0} max={999}/>
+                  min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Delayed_Payments}</Body>
               </div>
 
@@ -273,9 +274,9 @@ const Sidebar = ({ profileInfo }) => {
 
               <div style={{ position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "row"}}>
                 <Body style={{ color: "dark-green", margin: '5px' }}> Made with &hearts; by </Body>
-                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Ashwin Gangadhar</a> </Body>
-                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Paul Claret</a></Body>
-                <Body style={{ margin: '5px' }}> <a href="https://your-url.com" target="_blank" rel="noopener noreferrer">Utsav Talwar</a></Body>
+                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Ashwin Gangadhar</Link> </Body>
+                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Paul Claret</Link></Body>
+                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Utsav Talwar</Link></Body>
               </div>
             </>
           )}

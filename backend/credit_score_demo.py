@@ -8,7 +8,7 @@ import json
 import numpy as np
 
 from dummy import PrepareDummyCols
-from dotenv import load_dotenv
+from dotenv import load_dotenv 
 load_dotenv()
 from functools import lru_cache
 
@@ -18,13 +18,14 @@ from stat_score_util import calculate_credit_score, calculate_percentile_given_v
 import logging
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
+COLLECTION=os.environ.get("MONGODB_DB")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
-col = client["bfsi-genai"]["user_data"]
+col = client[COLLECTION]["user_data"]
 
-label_encoder_l = joblib.load("../model/credit_score_mul_lable_le.jlb")
-dummy_l = joblib.load("../model/credit_score_mul_lable_coldummy.jlb")
-model_l = joblib.load("../model/credit_score_mul_lable_model.jlb")
-ordinal_enc_l = joblib.load("../model/credit_score_mul_lable_ordenc.jlb")
+label_encoder_l = joblib.load("./model/credit_score_mul_lable_le.jlb")
+dummy_l = joblib.load("./model/credit_score_mul_lable_coldummy.jlb")
+model_l = joblib.load("./model/credit_score_mul_lable_model.jlb")
+ordinal_enc_l = joblib.load("./model/credit_score_mul_lable_ordenc.jlb")
 
 def predict(df):
     print(df)
@@ -69,11 +70,12 @@ def login():
     data = request.get_json()
     user_id = data["userId"]
     name = data["password"]
-    df = pd.DataFrame.from_records((col.find({"Customer_ID":int(user_id)}, {"_id":0})))
-    if df.shape[0]>0 and (df["Name"].values[0].split(" ")[0].lower()==name.lower()):
+    data = list(col.find({"Customer_ID":int(user_id)}, {"_id":0}))
+    df = pd.DataFrame.from_records(data)
+    if df.shape[0]>0 :
         return jsonify({"message": "Login Successfull"})
     else:
-        return Response(jsonify({"message": "Login Failed"}),status=403)
+        return jsonify({"message": "Login Failed"}), 403
 
 @app.route("/credit_score/<user_id>", methods=["GET"])
 def get_credit_score(user_id):
@@ -116,5 +118,5 @@ def product_suggetions():
     return jsonify({"productRecommendations": json.loads(product_recommendations)})
 
 if __name__ == "__main__":   # Please do not set debug=True in production
-    # print(get_user_profile(8625))
+    #print(get_user_profile(8625))
     app.run(host="0.0.0.0", port=5001, debug=True)

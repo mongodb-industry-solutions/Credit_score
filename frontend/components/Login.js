@@ -25,8 +25,8 @@ const LoginPage = () => {
     if (clientId.trim() === '' || password.trim() === '') {
       alert('Please enter both Client ID and Password');
     } else {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL + '/login';
-      axios.post(apiUrl, {
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL + '/login';
+	axios.post(apiUrl, {
         userId: clientId,
         password: password
       }, {
