@@ -37,6 +37,7 @@ const TextWithImage = ({ items }) => {
             src={key === "No Credit Card Recomended" ? '/images/Error.png' : '/images/creditCard.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
+            width={100} height={100} 
           />
           <div>
             <H3>{key}</H3>

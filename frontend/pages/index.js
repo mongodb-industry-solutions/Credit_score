@@ -8,6 +8,8 @@ import TextWithImage from '../components/TextWithImage';
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
 import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+
 
 
 const HomePage = () => {
@@ -23,20 +25,26 @@ const HomePage = () => {
   const [scorecardScoreFeatures, setScorecardScoreFeatures] = useState({ "Repayment History": 0, "Credit Utilization": 0, "Credit History": 0, "Outstanding": 0, "Num Credit Inquiries": 0, "Credit Score": 0})
   const [scoreCardCreditScore, setScoreCardCreditScore] = useState(0)
   const labels = ["Repayment History", "Credit Utilization", "Credit History", "Outstanding", "Num Credit Inquiries", "Credit Score"];
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const clientId = localStorage.getItem('clientId');
-      console.log('clientId', clientId);
+      let clientId = localStorage.getItem('clientId');
       if (!clientId) {
-        window.location.href = '/login';
-        return;
+        clientId = router.query.login;
+        localStorage.setItem('clientId', clientId);
+        if (!clientId) {
+          console.log('here', clientId)
+          window.location.href = '/login';
+          return;
+        }
       }
+      console.log('clientid', clientId)
       fetchProfileData(parseInt(clientId, 10));
       fetchExpl(parseInt(clientId, 10));
     }
 
-  }, []);
+  }, [router.query]);
 
   useEffect(() => {
     if (explSets["userProfile"]) {

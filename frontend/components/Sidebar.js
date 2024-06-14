@@ -168,7 +168,7 @@ const Sidebar = ({ profileInfo }) => {
       {isPopupOpen && <div className="button-backdrop" />}
       <div className={styles.sidebar}>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: "10%" }}>
-          <Image className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" />
+          <Image className={styles.profileImage} src={'/images/userAvatar.png'}  alt="Profile" width={100} height={100} />
           {profileInfo && (
             <div style={{ marginTop: "10%" }} >
               <H3> {profileInfo.Name}</H3>
