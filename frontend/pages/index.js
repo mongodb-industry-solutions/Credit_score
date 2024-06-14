@@ -28,23 +28,18 @@ const HomePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let clientId = localStorage.getItem('clientId');
+    if (router.isReady) {
+      let clientId = router.query.clientid;
+      localStorage.setItem('login', clientId);
+      console.log('clientId', clientId)
       if (!clientId) {
-        clientId = router.query.login;
-        localStorage.setItem('clientId', clientId);
-        if (!clientId) {
-          console.log('here', clientId)
-          window.location.href = '/login';
-          return;
-        }
+        clientId = localStorage.getItem('clientId');
+        console.log('login', clientId)
       }
-      console.log('clientid', clientId)
       fetchProfileData(parseInt(clientId, 10));
       fetchExpl(parseInt(clientId, 10));
     }
-
-  }, [router.query]);
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (explSets["userProfile"]) {
@@ -70,8 +65,9 @@ const HomePage = () => {
 
       const jsonData = await response.json();
 
-      console.log('jsonData', jsonData);
-      if (!jsonData || Object.keys(jsonData).length === 0) {
+      console.log('condition', !jsonData || Object.keys(jsonData).length === 0  || clientId === NaN)
+      if (!jsonData || Object.keys(jsonData).length === 0 || clientId === NaN) {
+        console.log('redirecting to login');
         window.location.href = '/login';
         return;
       }
