@@ -6,6 +6,8 @@ import { MongoDBLogoMark } from '@leafygreen-ui/logo';
 import { Body }  from '@leafygreen-ui/typography';
 import Button  from '@leafygreen-ui/button';
 import axios from 'axios';
+import Head from 'next/head';
+
 
 const LoginPage = () => {
   const [clientId, setClientId] = useState('');
@@ -13,9 +15,6 @@ const LoginPage = () => {
 
   const handleClientIdChange = (event) => {
     setClientId(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
@@ -76,6 +75,11 @@ const LoginPage = () => {
   };
 
   return (
+    <>
+      <Head>
+          <title>Credit Scoring</title>
+          <link rel="icon" href="/favicon.ico" />
+      </Head>  
       <div style={styles.container}>
         <div style={styles.loginBox}>
           <form style={styles.form}>
@@ -91,7 +95,7 @@ const LoginPage = () => {
             <PasswordInput
               label="Enter Password"
               id="new-password"
-              onChange={handlePasswordChange}
+              onChange={handleClientIdChange}
               value={password}
               style={{position: 'relative', top: '0px', left: '14px',  width: '180px',}}
             />
@@ -99,6 +103,7 @@ const LoginPage = () => {
           </form>
       </div>
     </div>
+  </>
   );
 };
 

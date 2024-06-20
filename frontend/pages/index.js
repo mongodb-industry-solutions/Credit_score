@@ -6,10 +6,10 @@ import Sidebar from '../components/Sidebar';
 import { H1, H2, H3, Body } from '@leafygreen-ui/typography';
 import TextWithImage from '../components/TextWithImage';
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
-import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
+import ExpandableCard from '@leafygreen-ui/expandable-card';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-
+import Head from 'next/head';
 
 
 const HomePage = () => {
@@ -146,7 +146,16 @@ const HomePage = () => {
             style={{ marginRight: '10px', maxWidth: '200px', borderRadius: '10px' }}
           />
   */
-  const CHART_URL = process.env.NEXT_PUBLIC_CHART_URL;
+
+
+  const markdownText = `This demo illustrates how Machine Learning (ML) and Generative AI can enhance a credit card application process using MongoDB Atlas Vector Search with LLM.
+
+Credit Profile: Users can adjust and save their credit profile (on the left panel). Once saved, the profile is then evaluated by two credit scoring models: an ML-based model (Credit Health Status) and a simple linear regression model (Credit Score). Details of these models are available in the solution library documentation.
+
+Status Explanation: The “Status explanation” tab uses Generative AI to explain why the Credit Health status is categorized as Good/Approved or Bad/Rejected. This helps borrowers understand and improve their credit profile, especially if they are rejected.
+
+Product Recommendation: The “Product recommendations” tab, powered by Generative AI, suggests alternative credit card products tailored to the credit profile. This feature assists rejected applicants with alternative options and provides cross-sell opportunities for approved customers.
+`;
 
   const textSet1WithIframe = (
     <div>
@@ -213,6 +222,11 @@ const HomePage = () => {
 
 
   return (
+    <>
+      <Head>
+          <title>Credit Scoring</title>
+          <link rel="icon" href="/favicon.ico" />
+      </Head>  
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {loading || loading2 ? (
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '19px', fontFamily: 'sans-serif' }}>
@@ -224,6 +238,13 @@ const HomePage = () => {
           <Layout sidebar={<Sidebar profileInfo={data} />}
             mainContent={
               <div style={{ margin: '3%', marginTop: '30px' }}>
+                <ExpandableCard
+                  title="Instructions"
+                  darkMode={false}
+                  style={{ margin: '10px 5px 15px', marginTop: '30px' }}
+                >
+                  <Body baseFontSize={16}>{markdownText}</Body>
+                </ExpandableCard>
                 <H3 style={{ display: 'inline' }}>Credit Health Status : </H3>
                 {health === 'Poor' ? (
                   <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7', padding: '3px' }}>
@@ -250,6 +271,7 @@ const HomePage = () => {
         </div>
       )}
     </div>
+    </>
   );
 
 };

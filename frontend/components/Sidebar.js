@@ -167,10 +167,10 @@ const Sidebar = ({ profileInfo }) => {
       {isPopupOpen && <div className="header-backdrop" />}
       {isPopupOpen && <div className="button-backdrop" />}
       <div className={styles.sidebar}>
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: "10%" }}>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start", marginBottom: "10%" }}>
           <Image className={styles.profileImage} src={'/images/userAvatar.png'}  alt="Profile" width={100} height={100} />
           {profileInfo && (
-            <div style={{ marginTop: "10%" }} >
+            <div style={{ marginTop: "10%",marginLeft: "5%" }} >
               <H3> {profileInfo.Name}</H3>
               <Subtitle> {profileInfo.Occupation}</Subtitle>
               <Subtitle> {profileInfo.Age} years</Subtitle>
@@ -188,7 +188,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Slider onChange={(event) => handleSliderChange(event, 'monthlyRentalCommitment')}
                   styles={defaultSliderStyle}
                   defaultValue={Monthly_Rental_Commitment} style={{ width: "55%" }} 
-                  min={0} max={Annual_Income}/>
+                  min={0} max={Annual_Income/12}/>
                 <Body baseFontSize={9} style={{ width: "10%" }}>${Monthly_Rental_Commitment.toFixed(0)}</Body>
               </div>
 
@@ -204,7 +204,7 @@ const Sidebar = ({ profileInfo }) => {
 
               <div className={styles.profileItem}>
                 <Body style={{ width: "20%" }}><strong>Num Credit Card:&nbsp;</strong></Body>
-                <Slider max={20} onChange={(event) => handleSliderChange(event, 'numCreditCard')}
+                <Slider max={10} onChange={(event) => handleSliderChange(event, 'numCreditCard')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Credit_Card} style={{ width: "55%" }} 
                   min={0} />
@@ -213,7 +213,7 @@ const Sidebar = ({ profileInfo }) => {
 
               <div className={styles.profileItem}>
                 <Body style={{ width: "20%" }}><strong>Num Bank Accounts:&nbsp;</strong></Body>
-                <Slider max={20} onChange={(event) => handleSliderChange(event, 'numBankAccounts')}
+                <Slider max={10} onChange={(event) => handleSliderChange(event, 'numBankAccounts')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Bank_Accounts} style={{ width: "55%" }} 
                   min={0} />
@@ -222,7 +222,7 @@ const Sidebar = ({ profileInfo }) => {
 
               <div className={styles.profileItem}>
                 <Body style={{ width: "20%" }}><strong>Total EMI per month:&nbsp;</strong></Body>
-                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'totalEMIperMonth')}
+                <Slider max={Annual_Income/12} onChange={(event) => handleSliderChange(event, 'totalEMIperMonth')}
                   styles={defaultSliderStyle}
                   defaultValue={Total_EMI_per_month} style={{ width: "55%" }} 
                   min={0} />
@@ -231,7 +231,7 @@ const Sidebar = ({ profileInfo }) => {
 
               <div className={styles.profileItem}>
                 <Body style={{ width: "20%" }}><strong>Monthly Inhand Salary:&nbsp;</strong></Body>
-                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'monthlyInhandSalary')}
+                <Slider max={15000} onChange={(event) => handleSliderChange(event, 'monthlyInhandSalary')}
                   styles={defaultSliderStyle}
                   defaultValue={Monthly_Inhand_Salary} style={{ width: "55%" }} 
                   min={0} />
@@ -240,15 +240,13 @@ const Sidebar = ({ profileInfo }) => {
 
               <div className={styles.profileItem}>
                 <Body style={{ width: "20%" }}><strong>Num of Delayed Payments:&nbsp;</strong></Body>
-                <Slider max={100000} onChange={(event) => handleSliderChange(event, 'numDelayedPayments')}
+                <Slider max={50} onChange={(event) => handleSliderChange(event, 'numDelayedPayments')}
                   styles={defaultSliderStyle}
                   defaultValue={Num_Delayed_Payments} style={{ width: "55%" }} 
                   min={0} />
                 <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Delayed_Payments}</Body>
               </div>
 
-              <br></br>
-              <br></br>
               <div className={styles.profileItem}>
                 <Body style={{ width: "25%" }}><strong>Credit Mix:&nbsp;</strong></Body>
                 <Body baseFontSize={9} style={{ width: "70%" }}><h3>{Credit_Mix}</h3></Body>
@@ -264,10 +262,9 @@ const Sidebar = ({ profileInfo }) => {
                 <Body baseFontSize={9} style={{ width: "70%" }}><h3>{Payment_Behaviour.replaceAll('_', " ")}</h3></Body>
               </div>
 
-
+              <br/>
               <div className={styles.profileItem}>
                 <Button style={{
-                  marginTop: "35px",
                   width: "80%",
                 }} onClick={handleSubmit}> Save Profile </Button>
               </div>

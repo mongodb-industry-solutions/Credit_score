@@ -12,6 +12,11 @@
   left: 0;
 }
 
+.sidebar.open {
+  left: 0;
+  align-items: center;
+}
+
 .slider {
   position: absolute;
   top: 0;
