@@ -1,6 +1,6 @@
 // components/Sidebar.js
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/sidebar.module.css';
 import { H3, Body, Subtitle } from '@leafygreen-ui/typography';
 import { NumberInput } from '@leafygreen-ui/number-input';
@@ -12,6 +12,9 @@ import 'rc-slider/assets/index.css';
 import ProfileSlider from '../components/ProfileSlider';
 import Image from 'next/image';
 import Link  from 'next/link';
+import { useRouter } from 'next/router';
+
+
 
 
 // Name
@@ -85,6 +88,8 @@ const Sidebar = ({ profileInfo }) => {
     monthlyRentalCommitment: setMonthlyRentalCommitment
   };
 
+  const router = useRouter();
+
   const defaultSliderStyle = {
     track: { backgroundColor: 'green' },
     handle: { borderColor: 'white', backgroundColor: 'black' },
@@ -97,38 +102,6 @@ const Sidebar = ({ profileInfo }) => {
     }
   };
 
-  const handleClick = () => {
-    setPopupOpen(true);
-  };
-
-  const handleClosePopup = () => {
-    setPopupOpen(false);
-  };
-
-  const handleAge = (event) => {
-    const { value } = event.target;
-    setAge(value);
-  };
-
-  const handleIncome = (event) => {
-    const { value } = event.target;
-    setIncome(value);
-  };
-
-  const handleDependents = (event) => {
-    const { value } = event.target;
-    setDependents(value);
-  };
-
-  const handlePortfolio = (event) => {
-    const { value } = event.target;
-    setPortfolio(value);
-  };
-
-  const handleInvestments = (event) => {
-    const { value } = event.target;
-    setInvestments(value);
-  };
 
   const handleSubmit = async () => {
 
@@ -143,7 +116,11 @@ const Sidebar = ({ profileInfo }) => {
     };
     console.log('Submitted user data:', userData);
 
-    const clientId = localStorage.getItem('clientId');
+    let clientId = localStorage.getItem('clientId');
+    if (clientId === null) {
+        clientId = router.query.clientid
+    }
+    console.log('login', clientId)
     const filter = { "Customer_ID": parseInt(clientId, 10) }
 
     const body = { "filter": filter, "update": { $set: userData } };
