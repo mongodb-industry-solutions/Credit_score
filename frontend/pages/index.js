@@ -10,6 +10,7 @@ import ExpandableCard from '@leafygreen-ui/expandable-card';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Markdown from 'react-markdown';
 
 
 const HomePage = () => {
@@ -148,14 +149,15 @@ const HomePage = () => {
   */
 
 
-  const markdownText = `This demo illustrates how Machine Learning (ML) and Generative AI can enhance a credit card application process using MongoDB Atlas Vector Search with LLM.
-
-Credit Profile: Users can adjust and save their credit profile (on the left panel). Once saved, the profile is then evaluated by two credit scoring models: an ML-based model (Credit Health Status) and a simple linear regression model (Credit Score). Details of these models are available in the solution library documentation.
-
-Status Explanation: The “Status explanation” tab uses Generative AI to explain why the Credit Health status is categorized as Good/Approved or Bad/Rejected. This helps borrowers understand and improve their credit profile, especially if they are rejected.
-
-Product Recommendation: The “Product recommendations” tab, powered by Generative AI, suggests alternative credit card products tailored to the credit profile. This feature assists rejected applicants with alternative options and provides cross-sell opportunities for approved customers.
-`;
+  let markdownText = `This demo illustrates how Machine Learning (ML) and Generative AI can enhance a credit card application process using MongoDB Atlas Vector Search with LLM.
+  
+  **Credit card application demo:**
+  Status Explanation: The “Status explanation” tab uses Generative AI to explain why the Credit Health status is categorized as Good/Approved or Bad/Rejected. This helps borrowers understand and improve their credit profile, especially if they are rejected.  
+  Product Recommendation: The “Product recommendations” tab, powered by Generative AI, suggests alternative credit card products tailored to the credit profile. This feature assists rejected applicants with alternative options and provides cross-sell opportunities for approved customers.
+  
+  **User Navigation:** 
+  Credit Profile: Users can adjust and save their credit profile (on the left panel). Once saved, the profile is then evaluated by two credit scoring models: an ML-based model (Credit Health Status) and a simple linear regression model (Credit Score). Details of these models are available in the solution library documentation.
+  `;
 
   const textSet1WithIframe = (
     <div>
@@ -241,22 +243,29 @@ Product Recommendation: The “Product recommendations” tab, powered by Genera
                 <ExpandableCard
                   title="Instructions"
                   darkMode={false}
-                  style={{ margin: '10px 5px 15px', marginTop: '30px' }}
+                  style={{ margin: '10px 5px', marginTop: '10px' }}
                 >
-                  <Body baseFontSize={16}>{markdownText}</Body>
+                  
+                  <Markdown components={{
+                    p: ({node, ...props}) => <p {...props} style={{ margin: 0 }} />,
+                    h1: ({node, ...props}) => <h1 {...props} style={{ margin: 0 }} />,
+                  }}
+                >
+                  {markdownText}
+                  </Markdown>
                 </ExpandableCard>
                 <H3 style={{ display: 'inline' }}>Credit Health Status : </H3>
                 {health === 'Poor' ? (
                   <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7', padding: '3px' }}>
-                    <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;POOR&nbsp;</H3>
+                    <H3 style={{ color: '#970606', display: 'inline', marginBottom: '50px' }}>&nbsp;REJECTED&nbsp;</H3>
                   </div>
                 ) : health === 'Standard' ? (
                   <div style={{ display: 'inline-block', borderRadius: '25px', background: '#C0FAE6', padding: '3px' }}>
-                    <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;NORMAL&nbsp;</H3>
+                    <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;APPROVED&nbsp;</H3>
                   </div>
                 ) : (
                   <div style={{ display: 'inline-block', borderRadius: '25px', background: '#C0F9AD', padding: '3px' }}>
-                    <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;GOOD&nbsp;</H3>
+                    <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;APPROVED&nbsp;</H3>
                   </div>
                 )}
                 <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
