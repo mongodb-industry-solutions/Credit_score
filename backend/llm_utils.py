@@ -20,13 +20,18 @@ MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
 vcol = client["bfsi-genai"]["cc_products"]
 
+headers = {
+    'X-Fireworks-Genie': True
+}
+
 llm = Fireworks(
     fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
     model="accounts/fireworks/models/mixtral-8x22b-instruct",
     temperature=0, 
     max_tokens=4096, 
     top_p=1.0, 
-    top_k=43
+    top_k=43,
+    headers=headers
     )
 
 llm_large = Fireworks(
@@ -36,7 +41,8 @@ llm_large = Fireworks(
     max_tokens=4096,
     temperature=0,
     top_p=1.0, 
-    top_k=43
+    top_k=43,
+    headers=headers
 )
 
 # embedding model
