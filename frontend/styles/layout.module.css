@@ -1,0 +1,16 @@
+/* styles/layout.module.css */
+
+.layoutContainer {
+  display: flex;
+}
+
+.sidebar {
+  flex: 0 0 400px; 
+  transition: flex 0.3s ease; 
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0; 
+  overflow: auto; 
+}
