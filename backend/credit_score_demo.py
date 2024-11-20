@@ -65,6 +65,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+@app.route("/", methods=["GET"])
+def root():
+    return {"status": "Server is running!"}
+
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()

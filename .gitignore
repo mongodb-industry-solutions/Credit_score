@@ -6,6 +6,17 @@ __pycache__/
 # C extensions
 *.so
 
+# Mac
+.DS_Store
+
+# Docker
+docker-compose-ecs.yml
+ecs-params.yml
+
+# Data (Artifacts and PDF Images)
+data/artifacts/*
+data/pdf-images/*
+
 # Distribution / packaging
 .Python
 build/
@@ -14,6 +25,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+lib/
 lib64/
 parts/
 sdist/
@@ -24,9 +36,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-.env
-tmp/
-.vscode/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -108,8 +117,10 @@ ipython_config.py
 #pdm.lock
 #   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
 #   in version control.
-#   https://pdm.fming.dev/#use-with-ide
+#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
 .pdm.toml
+.pdm-python
+.pdm-build/
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
