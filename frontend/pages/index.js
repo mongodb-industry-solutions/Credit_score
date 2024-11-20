@@ -30,17 +30,13 @@ const HomePage = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      let clientId = router.query.clientid;
+      let clientId = 8625; // Default to 8625
       localStorage.setItem('login', clientId);
-      console.log('clientId', clientId)
-      if (!clientId) {
-        clientId = localStorage.getItem('clientId');
-        console.log('login', clientId)
-      }
-      fetchProfileData(parseInt(clientId, 10));
-      fetchExpl(parseInt(clientId, 10));
+      console.log('clientId', clientId);
+      fetchProfileData(clientId);
+      fetchExpl(clientId);
     }
-  }, [router.isReady, router.query]);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (explSets["userProfile"]) {

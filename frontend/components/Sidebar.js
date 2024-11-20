@@ -246,12 +246,6 @@ const Sidebar = ({ profileInfo }) => {
                 }} onClick={handleSubmit}> Save Profile </Button>
               </div>
 
-              <div style={{ position: "fixed", bottom: 0, width: "100%", display: "flex", flexDirection: "row"}}>
-                <Body style={{ color: "dark-green", margin: '5px' }}> Made with &hearts; by </Body>
-                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Ashwin Gangadhar</Link> </Body>
-                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Paul Claret</Link></Body>
-                <Body style={{ margin: '5px' }}> <Link href="https://your-url.com" target="_blank" rel="noopener noreferrer">Utsav Talwar</Link></Body>
-              </div>
             </>
           )}
         </div>
