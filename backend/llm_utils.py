@@ -26,24 +26,24 @@ headers = {
 
 llm = Fireworks(
     fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
-    model="accounts/fireworks/models/mixtral-8x22b-instruct",
+    model="accounts/fireworks/models/llama-v3p3-70b-instruct",
     temperature=0, 
     max_tokens=4096, 
-    top_p=1.0, 
+    top_p=0.9, 
     top_k=43,
     headers=headers
     )
 
-llm_large = Fireworks(
-    fireworks_api_key=os.environ["FIREWORKS_API_KEY"],
-    model="accounts/fireworks/models/mixtral-8x22b-instruct",
-    base_url="https://api.fireworks.ai/inference/v1/completions",
-    max_tokens=4096,
-    temperature=0,
-    top_p=1.0, 
-    top_k=43,
-    headers=headers
-)
+# llm_large = Fireworks(
+#     fireworks_api_key=os.environ["FIREWORKS_API_KEY"],
+#     model="accounts/fireworks/models/mixtral-8x22b-instruct",
+#     base_url="https://api.fireworks.ai/inference/v1/completions",
+#     max_tokens=4096,
+#     temperature=0,
+#     top_p=1.0, 
+#     top_k=43,
+#     headers=headers
+# )
 
 # embedding model
 repo_id = "hkunlp/instructor-base"
