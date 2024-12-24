@@ -63,7 +63,7 @@ const Sidebar = ({ profileInfo }) => {
   const [Outstanding_Debt, setOutstanding_Debt] = useState(profileInfo.Outstanding_Debt);
   const [Num_Credit_Card, setNum_Credit_Card] = useState(profileInfo.Num_Credit_Card);
   const [Num_Bank_Accounts, setNum_Bank_Accounts] = useState(profileInfo.Num_Bank_Accounts);
-  const [Num_Delayed_Payments, setNumOfDelayedPayments] = useState(profileInfo.Num_of_Delayed_Payment);
+  const [Num_of_Delayed_Payment, setNumOfDelayedPayments] = useState(profileInfo.Num_of_Delayed_Payment);
   const [Total_EMI_per_month, setTotal_EMI_per_month] = useState(profileInfo.Total_EMI_per_month);
   const [Monthly_Inhand_Salary, setMonthly_Inhand_Salary] = useState(profileInfo.Monthly_Inhand_Salary);
   const [Monthly_Rental_Commitment, setMonthlyRentalCommitment] = useState(profileInfo.Monthly_Rental_Commitment);
@@ -112,8 +112,11 @@ const Sidebar = ({ profileInfo }) => {
       ...(Num_Bank_Accounts !== null && { "Num_Bank_Accounts": parseInt(Num_Bank_Accounts, 10) }),
       ...(Total_EMI_per_month !== null && { "Total_EMI_per_month": parseFloat(Total_EMI_per_month) }),
       ...(Monthly_Inhand_Salary !== null && { "Monthly_Inhand_Salary": parseFloat(Monthly_Inhand_Salary) }),
-      ...(Num_Delayed_Payments !== null && { "Num_Delayed_Payments": parseInt(Num_Delayed_Payments, 100) }),
+      ...(Num_of_Delayed_Payment !== null && { "Num_of_Delayed_Payment": parseInt(Num_of_Delayed_Payment, 10) }),
     };
+    console.log('Printing user data....');
+    console.log('userData:', userData);
+    
     console.log('Submitted user data:', userData);
 
     let clientId = localStorage.getItem('clientId');
@@ -219,9 +222,9 @@ const Sidebar = ({ profileInfo }) => {
                 <Body style={{ width: "20%" }}><strong>Num of Delayed Payments:&nbsp;</strong></Body>
                 <Slider max={50} onChange={(event) => handleSliderChange(event, 'numDelayedPayments')}
                   styles={defaultSliderStyle}
-                  defaultValue={Num_Delayed_Payments} style={{ width: "55%" }} 
+                  defaultValue={Num_of_Delayed_Payment} style={{ width: "55%" }} 
                   min={0} />
-                <Body baseFontSize={9} style={{ width: "10%" }}>{Num_Delayed_Payments}</Body>
+                <Body baseFontSize={9} style={{ width: "10%" }}>{Num_of_Delayed_Payment}</Body>
               </div>
 
               <div className={styles.profileItem}>
