@@ -24,13 +24,14 @@ headers = {
     'X-Fireworks-Genie': True
 }
 
+# https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct
 llm = Fireworks(
     fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
     model="accounts/fireworks/models/llama-v3p3-70b-instruct",
-    temperature=0, 
-    max_tokens=4096, 
+    temperature=0.000001, 
+    max_tokens=16384, 
     top_p=0.9, 
-    top_k=43,
+    top_k=20,
     headers=headers
     )
 
