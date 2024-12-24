@@ -61,15 +61,18 @@ def get_model_feature_imps():
     return feature_importance
 
 from flask import Flask, jsonify, request, Response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/", methods=["GET"])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def root():
     return {"status": "Server is running!"}
 
 @app.route("/login", methods=["POST"])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def login():
     data = request.get_json()
     user_id = data["userId"]
@@ -82,6 +85,7 @@ def login():
         return jsonify({"message": "Login Failed"}), 403
 
 @app.route("/credit_score/<user_id>", methods=["GET"])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def get_credit_score(user_id):
     pred , allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
     response = get_credit_score_expl(user_profile_ip, pred, allowed_credit_limit, get_model_feature_imps())
@@ -103,6 +107,7 @@ def get_credit_score(user_id):
                     "scorecardScoreFeatures": ip ,"userId": user_id})
 
 @app.route("/product_suggestions", methods=["POST"])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def product_suggetions():
     data = request.get_json()
     user_profile = data["userProfile"]
