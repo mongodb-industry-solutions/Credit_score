@@ -34,8 +34,8 @@ pm2 start credit_score_demo.py --interpreter=python3
 > If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.
 
 You should have two APIs:
-- http://localhost:5000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
-- http://localhost:5000/product_suggestions
+- http://localhost:8000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
+- http://localhost:8000/product_suggestions
 
 As a reminder, in this demo we use both AI as well as genAI. Below you can see the architecture of the first API. Simply put, we generate a custom prompt by enriching the existing information on the MongoDB database with the ML algorithm that we trained prior. This is then sent to the LLM to generate the explanation for the approval/rejection of the user's application.
 ![image](./Explainations.png)

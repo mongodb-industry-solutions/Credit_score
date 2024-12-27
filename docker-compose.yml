@@ -1,20 +1,20 @@
 services:
-  credit-score-front:
+  credit-score-frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    image: credit-score-front:latest
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: credit-score-frontend-image:latest
     ports:
-      - "3003:3000"
+      - "3000:3000"
     restart: always
-    container_name: credit-score-front
+    container_name: credit-score-frontend-container
 
-  credit-score-back:
+  credit-score-backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: credit-score-back:latest
+      context: .
+      dockerfile: Dockerfile.backend
+    image: credit-score-backend-image:latest
     ports:
-      - "5001:5001"
+      - "8000:8000"
     restart: always
-    container_name: credit-score-back
+    container_name: credit-score-backend-container

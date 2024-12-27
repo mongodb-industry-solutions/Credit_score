@@ -17,12 +17,12 @@ import os
 from functools import lru_cache
 
 MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
-client = MongoClient(MONGO_CONN,tlsCAFile=certifi.where())
+client = MongoClient(MONGO_CONN)
 vcol = client["bfsi-genai"]["cc_products"]
 
-headers = {
-    'X-Fireworks-Genie': True
-}
+# headers = {
+#     'X-Fireworks-Genie': True
+# }
 
 # https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct
 llm = Fireworks(
@@ -31,8 +31,7 @@ llm = Fireworks(
     temperature=0.000001, 
     max_tokens=16384, 
     top_p=0.9, 
-    top_k=20,
-    headers=headers
+    top_k=20
     )
 
 # llm_large = Fireworks(
