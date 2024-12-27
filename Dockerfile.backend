@@ -1,5 +1,6 @@
 FROM python:3.11
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 WORKDIR /app
 COPY /backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -7,6 +8,8 @@ COPY ./backend/ .
 EXPOSE 8000
 CMD ["python3", "main.py"]
 =======
+=======
+>>>>>>> Stashed changes
 
 ENV GET_POETRY_IGNORE_DEPRECATION=1
 
@@ -27,5 +30,9 @@ COPY ./backend/ .
 
 EXPOSE 8000
 
+<<<<<<< Updated upstream
+CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+>>>>>>> Stashed changes
+=======
 CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 >>>>>>> Stashed changes

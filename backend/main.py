@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import pandas as pd
 import joblib
 from pymongo import MongoClient
@@ -17,6 +18,8 @@ from fastapi.responses import JSONResponse
 
 import uvicorn
 =======
+=======
+>>>>>>> Stashed changes
 import os
 import json
 import logging
@@ -32,6 +35,9 @@ from functools import lru_cache
 from llm_utils import get_credit_score_expl, get_product_suggestions_1, get_credit_card_recommendations
 from stat_score_util import calculate_credit_score, calculate_percentile_given_value
 from dummy import PrepareDummyCols
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 # Load environment variables
@@ -40,6 +46,7 @@ load_dotenv()
 # MongoDB setup
 MONGO_CONN = os.environ.get("MONGO_CONNECTION_STRING")
 COLLECTION = os.environ.get("MONGODB_DB")
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 client = MongoClient(MONGO_CONN)
 col = client[COLLECTION]["user_data"]
@@ -92,6 +99,8 @@ app = FastAPI()
 
 # CORS middleware setup
 =======
+=======
+>>>>>>> Stashed changes
 client = MongoClient(MONGO_CONN, tlsCAFile=certifi.where())
 col = client[COLLECTION]["user_data"]
 
@@ -107,6 +116,9 @@ MODELS = {
 app = FastAPI()
 
 # Add CORS middleware
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 app.add_middleware(
     CORSMiddleware,
@@ -118,9 +130,12 @@ app.add_middleware(
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 @app.get("/")
 async def root():
 =======
+=======
+>>>>>>> Stashed changes
 def preprocess_data(df, dummy, ordinal_encoder):
     """Preprocess input data for prediction."""
     df_copy = df.copy()
@@ -180,6 +195,9 @@ def get_model_feature_importances():
 
 @app.get("/")
 async def health_check():
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     return {"status": "Server is running!"}
 
@@ -188,6 +206,7 @@ async def health_check():
 async def login(request: Request):
     data = await request.json()
     user_id = data["userId"]
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     # Assuming 'password' is used somewhere in the logic, retrieved it from data
     name = data["password"]
@@ -198,15 +217,21 @@ async def login(request: Request):
     else:
         raise HTTPException(status_code=403, detail="Login Failed")
 =======
+=======
+>>>>>>> Stashed changes
     user_exists = col.find_one({"Customer_ID": int(user_id)})
     if user_exists:
         return {"message": "Login Successful"}
     raise HTTPException(status_code=403, detail="Login Failed")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
 @app.get("/credit_score/{user_id}")
 async def get_credit_score(user_id: int):
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     pred, allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
     response = get_credit_score_expl(
@@ -228,6 +253,8 @@ async def get_credit_score(user_id: int):
         "scoreCardCreditScore": scorecard_credit_score,
         "scorecardScoreFeatures": ip,
 =======
+=======
+>>>>>>> Stashed changes
     pred, allowed_credit_limit, user_profile = get_user_profile(user_id)
     explanation = get_credit_score_expl(
         user_profile, pred, allowed_credit_limit, get_model_feature_importances())
@@ -256,6 +283,9 @@ async def get_credit_score(user_id: int):
         "allowedCreditLimit": allowed_credit_limit,
         "scoreCardCreditScore": scorecard_credit_score,
         "scorecardScoreFeatures": score_features,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         "userId": user_id
     }
@@ -263,6 +293,7 @@ async def get_credit_score(user_id: int):
 
 @app.post("/product_suggestions")
 async def product_suggestions(request: Request):
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     try:
         # Attempt to parse the incoming JSON request
@@ -313,6 +344,8 @@ async def product_suggestions(request: Request):
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 =======
+=======
+>>>>>>> Stashed changes
     data = await request.json()
     user_profile = data["userProfile"]
     user_id = data["userId"]
@@ -334,4 +367,7 @@ if __name__ == "__main__":
     )
 
     return {"productRecommendations": json.loads(recommendations.replace("\n", "").strip())}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
