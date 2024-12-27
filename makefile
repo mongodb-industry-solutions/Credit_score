@@ -9,3 +9,12 @@ stop:
 
 clean:
 	docker-compose down --rmi all -v
+
+poetry_start:
+	cd backend && poetry config virtualenvs.in-project true
+
+poetry_install:
+	cd backend && poetry install --no-interaction -v --no-cache --no-root
+
+poetry_update:
+	cd backend && poetry update

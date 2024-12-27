@@ -1,8 +1,14 @@
 FROM node:20.10.0
 WORKDIR /app
 COPY frontend/package*.json ./
+<<<<<<< Updated upstream
 RUN npm i
 COPY frontend/ .
 RUN npm run build  
+=======
+RUN npm install
+COPY frontend/ .
+RUN npm run build
+>>>>>>> Stashed changes
 EXPOSE 3000
 CMD ["npm", "start"]
