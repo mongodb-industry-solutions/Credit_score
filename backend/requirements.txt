@@ -19,8 +19,6 @@ dnspython==2.6.1
 executing==2.0.1
 filelock==3.13.1
 fireworks-ai==0.13.0
-Flask==3.0.2
-Flask-Cors==4.0.0
 frozenlist==1.4.1
 fsspec==2024.2.0
 google-ai-generativelanguage==0.4.0
@@ -122,3 +120,5 @@ wcwidth==0.2.13
 Werkzeug==3.0.1
 xgboost==2.0.3
 yarl==1.9.4
+fastapi==0.115.4
+uvicorn==0.32.0

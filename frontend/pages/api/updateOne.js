@@ -1,5 +1,3 @@
-// pages/api/updateOne.js
-
 import clientPromise from '../../lib/mongodb';
 
 export default async function handler(req, res) {
@@ -10,7 +8,10 @@ export default async function handler(req, res) {
     const db = client.db('bfsi-genai');
     const coll = db.collection('user_data');
 
-    const data = await coll.updateOne(filter,update);
+    // Ensure _id is not part of the update object
+    delete update.$set._id;
+
+    const data = await coll.updateOne(filter, update);
 
     return res.status(200).json(data);
   } catch (error) {
