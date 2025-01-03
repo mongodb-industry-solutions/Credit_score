@@ -24,11 +24,11 @@ MONGODB_DB=bfsi-genai
 Lastly, run the bankend services:
 
 ```bash
-python credit_score_demo.py
+python main.py
 # or
-python3 credit_score_demo.py
+python3 main.py
 # or if you are running it on a server
-pm2 start credit_score_demo.py --interpreter=python3
+pm2 start main.py --interpreter=python3
 ```
 > [!Note]
 > If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.

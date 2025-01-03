@@ -6,21 +6,6 @@ from langchain_core.pydantic_v1 import BaseModel, Field, validator
 import os
 from dotenv import load_dotenv
 
-# from langchain_fireworks import Fireworks 
-
-# load_dotenv()
-
-# llm = Fireworks(
-#     fireworks_api_key=os.environ["FIREWORKS_API_KEY"],
-#     model="accounts/fireworks/models/mixtral-8x22b-instruct",
-#     base_url="https://api.fireworks.ai/inference/v1/completions",
-#     max_tokens=1024,
-#     temperature=0,
-#     top_p=1,
-#     top_k=40
-# )
-
-
 get_credit_score_expl_prompt = PromptTemplate.from_template(
     """    
     ##Instruction: 
@@ -62,51 +47,21 @@ get_credit_score_expl_prompt = PromptTemplate.from_template(
     ## Model Inference Results:
     - Credit Health={pred}
     - Processed Credit Limit for the user={allowed_credit_limit}
-         
 
-    Explain the Descision in detail for Credit Health and Processed Credit limit within 250 words:[Reason]
+    The output only contains the explanation in text format.
+
+    Explain the decision in detail for Credit Health and Processed Credit limit within 130 words: [Reason]
     """
 )
 
-
 class CreditCard(BaseModel):
-    name: str = Field(description="name of an credit card")
-    description: str = Field(description="Presonlized description of the credit card in 50 words")
+    name: str = Field(description="Name of the credit card")
+    description: str = Field(description="Personalized description of the credit card in no more than 30 words")
 
 class Recommendations(BaseModel):
     card_suggestions: List[CreditCard] = Field(description="List of credit cards recommended to the user")
 
 recommendation_parser = PydanticOutputParser(pydantic_object=Recommendations)
-# new_parser = OutputFixingParser.from_llm(parser=recommendation_parser, llm=llm)
-
-get_credit_card_recommendations_prompt = PromptTemplate(
-    template="""
-    ##Instruction:
-    - Given the user profile and recommended credit cards that will best fit the user profile.
-    - Reason as to why the credit card is suggested to the user for each card.
-    - Provide product features to help user choose
-
-    ## User profile:
-    {user_profile}
-
-    ## Credit cards Recommendations:
-    {card_suggestions}
-
-    Output in Json format example below
-    ```json
-    
-    ````
-
-    ## Format Instructions: {format_instruction}
-
-    """,
-    input_variables=["user_profile", "card_suggestions"],
-    partial_variables={"format_instruction": recommendation_parser.get_format_instructions()}
-)
-
-    # ## Recommendations=Output as Json with card name as Key and concise summary of the card as value:
-    # Output:{{"CardName1":"personalized_product_description_1","CardName2":"personalized_product_description_2",...}}
-
 
 user_profile_based_cc_rec_prompt = PromptTemplate(
     template="""
@@ -126,10 +81,12 @@ user_profile_based_cc_rec_prompt = PromptTemplate(
     - Take into account user annual income, occupation, montly inhand salary while preparing search term to query the vector search
     -{search_term_suggestion}
 
+    The output only contains the recommendation in JSON format.
+
     Output in Json format example below
     ```json
 
-    ````
+    ```
     
     ## Result Format Instructions:{format_instruction}
     

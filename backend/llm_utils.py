@@ -7,7 +7,7 @@ from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain.embeddings.huggingface import HuggingFaceInstructEmbeddings
 from langchain.retrievers import MultiQueryRetriever
 
-from prompt_utils import get_credit_score_expl_prompt, get_credit_card_recommendations_prompt, user_profile_based_cc_rec_prompt, recommendation_parser
+from prompt_utils import get_credit_score_expl_prompt, user_profile_based_cc_rec_prompt, recommendation_parser
 
 from dotenv import load_dotenv
 
@@ -20,40 +20,24 @@ MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 client = MongoClient(MONGO_CONN)
 vcol = client["bfsi-genai"]["cc_products"]
 
-# headers = {
-#     'X-Fireworks-Genie': True
-# }
-
-# https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct
+# https://fireworks.ai/models/fireworks/llama-v3p1-405b-instruct
 llm = Fireworks(
-    fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
-    model="accounts/fireworks/models/llama-v3p3-70b-instruct",
-    temperature=0.000001, 
-    max_tokens=16384, 
-    top_p=0.9, 
-    top_k=20
+        fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
+        model="accounts/fireworks/models/llama-v3p1-405b-instruct",
+        temperature=0.000001,
+        max_tokens=4096, 
+        top_p=0.9, 
+        top_k=20
     )
 
-# llm_large = Fireworks(
-#     fireworks_api_key=os.environ["FIREWORKS_API_KEY"],
-#     model="accounts/fireworks/models/mixtral-8x22b-instruct",
-#     base_url="https://api.fireworks.ai/inference/v1/completions",
-#     max_tokens=4096,
-#     temperature=0,
-#     top_p=1.0, 
-#     top_k=43,
-#     headers=headers
-# )
-
-# embedding model
+# Embedding model
 repo_id = "hkunlp/instructor-base"
 hf = HuggingFaceInstructEmbeddings(model_name=repo_id, cache_folder="tmp/")
 hf.embed_instruction = "Represent the description to find most relevant credit cards as per provided Credit health:"
 
-# Vector store declaration
+# Vector Store declaration
 vectorstore = MongoDBAtlasVectorSearch(vcol, hf)
 retriever = vectorstore.as_retriever(search_type='similarity',search_kwargs={'k': 5})
-# recommender_retriever = MultiQueryRetriever.from_llm(retriever=retriever,llm=llm_large)
 
 @lru_cache(1000000)
 def invoke_llm(prompt):
@@ -84,43 +68,10 @@ def get_credit_score_expl(user_profile_ip, pred, allowed_credit_limit, feature_i
                                                  feature_importance=feature_importance)
     return invoke_llm(prompt)
 
-@lru_cache(1000)
-def get_credit_card_recommendations(user_profile, user_profile_ip, pred, allowed_credit_limit, card_suggestions):
+@lru_cache(maxsize=100)
+def get_card_suggestions(user_profile, user_profile_ip, pred, allowed_credit_limit):
     """
-    
-    Get the credit card recommendations from the LLM.
-
-    Args:
-        user_profile (str): The user profile information.
-        user_profile_ip (json): The user profile information in Json format.
-        pred (float): The predicted credit score.
-        allowed_credit_limit (float): The allowed credit limit.
-        card_suggestions (str): The card suggestions string.
-
-    Returns:
-        str: The card suggestions with personalized summary based on the user profile and prediction.
-
-    """
-    prompt = get_credit_card_recommendations_prompt.format(user_profile=user_profile,\
-                                                  user_profile_ip=user_profile_ip,\
-                                                  pred=pred,\
-                                                  allowed_credit_limit=allowed_credit_limit,\
-                                                  card_suggestions=card_suggestions)
-    print("Output Summarize prompt \n", prompt)
-    resp = invoke_llm(prompt)
-    print('=================================================================')
-    print("Output Summarize Response \n",resp)
-    print(f"================================================================")
-    parsed_resp = recommendation_parser.parse(resp)
-    out = {}
-    for ele in json.loads(parsed_resp.json())['card_suggestions']:
-        out[ele['name']] = ele['description']
-    return json.dumps(out)
-
-@lru_cache(100)
-def get_product_suggestions_1(user_profile, user_profile_ip, pred, allowed_credit_limit):
-    """
-    Retrieves product suggestions based on user profile and prediction.
+    Retrieves card suggestions based on user profile and prediction.
 
     Args:
         user_profile (str): The user profile information.
@@ -131,11 +82,14 @@ def get_product_suggestions_1(user_profile, user_profile_ip, pred, allowed_credi
     Returns:
         str: The card suggestions based on the user profile and prediction.
     """
+    import time
+    start_time = time.time()
 
+    # Mapping prediction to search term suggestion
     search_term_suggestions = [
-        "suggest card that have the usage of words like priority pass, zenith, lifetime free, super premium, ultra luxury, dining benefits, concerige services, premium, co branded, travel, cashback, rewards, dining, shopping, fuel, lifestyle, entertainment, airport, lounge, golf, movie, hotel, concierge, insurance, wellness, health, fitness, luxury, exclusive, signature, platinum, gold, silver, titanium, contactless, contact-free, contact less, contact free, virtual, digital, online, offline, international, domestic, global, local, zero, no, low, minimum, maximum, high",
-        "suggest card that have the usage limits, cashback, basic, 50 days repayment cycle, low annual fee, basic features, low joining fees, higher interest rate",
-        "suggest card that have usage of words cashback, with moderate credit limit and features, annual fee waiver on spends, redeem gifts on reward points"
+        "suggest card that have the usage of words like priority pass, zenith, lifetime free, super premium, ultra luxury, dining benefits, premium.",
+        "suggest card that have usage limits, cashback, basic, 50 days repayment cycle, low annual fee, basic features, low joining fees, higher interest rate.",
+        "suggest card that have usage of words cashback, with moderate credit limit and features, annual fee waiver on spends, redeem gifts on reward points."
     ]
 
     if pred == 'Good':
@@ -145,25 +99,105 @@ def get_product_suggestions_1(user_profile, user_profile_ip, pred, allowed_credi
     elif pred == 'Standard':
         search_term_suggestion = search_term_suggestions[2]
 
-    user_profile_ip = json.loads(user_profile_ip)
+    # Parse user profile input
+    try:
+        user_profile_ip = json.loads(user_profile_ip)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid user_profile_ip JSON: {e}")
+
+    print(f"User Profile: {user_profile}")
+    print(f"User Profile Annual Income: {user_profile_ip.get('Annual_Income')}")
+    print(f"User Profile Occupation: {user_profile_ip.get('Occupation')}")
+    print(f"User Profile Monthly Inhand Salary: {user_profile_ip.get('Monthly_Inhand_Salary')}")
+    print(f"Prediction: {pred}")
+    print(f"Allowed Credit Limit: {allowed_credit_limit}")
+    print(f"Search Term Suggestion: {search_term_suggestion}")
+
+    # Prepare the recommendation prompt
     reco_prompt = user_profile_based_cc_rec_prompt.format(
-        user_profile=user_profile,
-        annual_income=user_profile_ip["Annual_Income"],
-        occupation=user_profile_ip["Occupation"],
-        monthly_inhand_salary=user_profile_ip["Monthly_Inhand_Salary"],
-        pred=pred,
-        allowed_credit_limit=allowed_credit_limit,
-        search_term_suggestion=search_term_suggestion
-    )
-    resp = invoke_llm(reco_prompt)
-    parsed_resp = recommendation_parser.parse(resp)
+            user_profile=user_profile,
+            annual_income=user_profile_ip.get('Annual_Income'),
+            occupation=user_profile_ip.get('Occupation'),
+            monthly_inhand_salary=user_profile_ip.get('Monthly_Inhand_Salary'),
+            pred=pred,
+            allowed_credit_limit=allowed_credit_limit,
+            search_term_suggestion=search_term_suggestion
+        )
 
-    card_suggestions = json.loads(parsed_resp.json())['card_suggestions']
+    # Invoke LLM 
+    try:
+        # Invoke the LLM with the formatted prompt
+        raw_response = invoke_llm(reco_prompt)
+        print("Raw LLM Response:", raw_response)
+    except Exception as e:
+        raise ValueError(f"Error invoking LLM: {e}")
+
+    # Parse the LLM response
+    try:
+        parsed_resp = recommendation_parser.parse(raw_response)
+    except Exception as e:
+        print(f"Error parsing LLM response: {e}")
+        raise ValueError("Failed to parse recommendations from LLM response.")
+
+    # Extract card suggestions from the parsed response
+    try:
+        card_suggestions = json.loads(parsed_resp.json())['card_suggestions']
+    except Exception as e:
+        print("Error extracting card suggestions from LLM response:", e)
+        raise ValueError("Failed to extract card suggestions from LLM response.")
+
+    print("Card Suggestions JSON Dict:")
+    print(card_suggestions)
+
+    # Retrieve relevant documents for each card suggestion from the retriever using the card suggestion name and description
     recs = []
-    for suggestion in card_suggestions:
-        recs += retriever.get_relevant_documents(f"{suggestion['name']}: {suggestion['description']}")
 
-    card_suggestions = ""
-    for r in recs:
-        card_suggestions += f'- Card name:{" ".join(r.metadata["title"].split("-"))} card \n  Card Features:{r.page_content} +\n'
-    return card_suggestions
+    try:
+        for suggestion in card_suggestions:
+            print()
+            print(f"Retrieving relevant documents for card suggestion: {suggestion['name']}: {suggestion['description']}")
+            recs += retriever.get_relevant_documents(f"{suggestion['name']}: {suggestion['description']}")
+        print()
+        print("Retrieved relevant documents for card suggestions:")
+        print(recs)
+        print("Limiting to first 5 recommendations:")
+        recs = recs[:5]  # Only take the first 5 items
+    except Exception as e:
+        print(f"Error retrieving relevant documents: {e}")
+        raise ValueError("Failed to retrieve relevant documents for card suggestions.")
+
+
+    # Format the card suggestions into a JSON string
+    try:
+        # Create a list to hold the card suggestion dictionaries
+        card_suggestions_list = []
+        # Create a set to keep track of processed card names
+        seen_names = set()
+        
+        # Loop over `recs` to build the suggestion data
+        for r in recs:
+            name = r.metadata["title"].strip()
+            # Check if the name has already been processed
+            if name not in seen_names:
+                suggestion = {
+                    "name": name,
+                    "description": r.page_content.strip()
+                }
+                card_suggestions_list.append(suggestion)
+                # Add the name to the set of processed names
+                seen_names.add(name)
+
+        print("Formatted Card Suggestions List:")
+        print(card_suggestions_list)
+            
+        # Serialize the list of dictionaries into a JSON string
+        card_suggestions_json = json.dumps({"card_suggestions": card_suggestions_list}, ensure_ascii=False)
+        # Print the final JSON string for additional debugging (optional)
+        print("Final Card Suggestions JSON:", card_suggestions_json)
+        # Return the serialized JSON string
+        return card_suggestions_json
+        
+    except Exception as e:
+        print(f"Error formatting card suggestions: {e}")
+        raise ValueError("Failed to format card suggestions.")
+    
