@@ -14,7 +14,7 @@ If you want to delve into more detail, our blog sheds light on credit scoring fu
 This GitHub repository presents a demo in which you will be able to log on to a client that has already submitted a Credit card application. This approach can be applied to other credit products – like personal loans, mortgages, corporate loans, and trade finance credit lines – and their applications without necessarily confining them to a credit card product only. Its main functionality is for the customer to use generative AI (GenAI) to get a detailed explanation of why the application was rejected. We will also leverage MongoDB vector search capabilities to provide recommendations of different cards that might be more adapted for the customer.
 
 > [!Warning]
-> This demo uses LLMs. We will be using Fireworks.ai and therefore will need an API key, which is not included here. However, you can still sign up for free with your Google account [here](https://fireworks.ai/login). Fireworks.ai is a partner of MongoDB AI Applications Program (MAAP), which you can read more about [here](https://www.mongodb.com/services/consulting/ai-applications-program). You can also choose to use Google Gemini by [switching to the "main" branch](https://github.com/mongodb-industry-solutions/Credit_score/tree/main).
+> This demo uses LLMs. We will be using Fireworks.ai and therefore will need an API key, which is not included here. However, you can still sign up for free with your Google account [here](https://fireworks.ai/login). Fireworks.ai is a partner of MongoDB AI Applications Program (MAAP), which you can read more about [here](https://www.mongodb.com/services/consulting/ai-applications-program).
 
 ## Installation of the Demo
 

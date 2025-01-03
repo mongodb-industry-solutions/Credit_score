@@ -1,10 +1,8 @@
-// pages/index.js
-
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import { H1, H2, H3, Body } from '@leafygreen-ui/typography';
+import { H1, H3, Body } from '@leafygreen-ui/typography';
 import TextWithImage from '../components/TextWithImage';
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
 import ExpandableCard from '@leafygreen-ui/expandable-card';
@@ -16,12 +14,12 @@ import Markdown from 'react-markdown';
 const HomePage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [refresh, setRefresh] = useState(false); // Tracks when to refresh fetches
+  const [refresh, setRefresh] = useState(false);
   const [loading2, setLoading2] = useState(true);
-  const [SecondTab, setSecondTab] = useState(true);
+  const [secondTab, setSecondTab] = useState(true);
   const [selected, setSelected] = useState(0);
   const [explSets, setExplSets] = useState({ userProfile: "" });
-  const [recSets, setRecSets] = useState({ product_suggestions: null });
+  const [recSets, setRecSets] = useState([]); // Ensure recSets is initialized as an array
   const [error, setError] = useState(false);
   const [health, setHealth] = useState(null);
   const [scorecardScoreFeatures, setScorecardScoreFeatures] = useState({
@@ -38,13 +36,12 @@ const HomePage = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      let clientId = localStorage.getItem('clientId') || 8625; // Either local client ID or default
+      const clientId = localStorage.getItem('clientId') || 8625;
       localStorage.setItem('clientId', clientId);
-      console.log('clientId', clientId);
       fetchProfileData(clientId);
       fetchExpl(clientId);
     }
-  }, [router.isReady, refresh]); // Add `refresh` dependency
+  }, [router.isReady, refresh]);
 
   useEffect(() => {
     if (explSets.userProfile) {
@@ -69,13 +66,11 @@ const HomePage = () => {
       }
 
       const jsonData = await response.json();
-
-      console.log('condition', !jsonData || Object.keys(jsonData).length === 0 || clientId === NaN)
       if (!jsonData || Object.keys(jsonData).length === 0 || clientId === NaN) {
-        console.log('redirecting to login');
         window.location.href = '/login';
         return;
       }
+
       setLoading(false);
       setData(jsonData);
 
@@ -97,11 +92,9 @@ const HomePage = () => {
       const text = await response.json();
       setExplSets(text);
       setLoading2(false);
-      console.log('text', text);
       setHealth(text.userCreditProfile);
       setScorecardScoreFeatures(text.scorecardScoreFeatures);
       setScoreCardCreditScore(text.scoreCardCreditScore);
-      console.log('scorecardScoreFeatures', text.scorecardScoreFeatures);
 
     } catch (error) {
       setLoading2(false);
@@ -119,10 +112,12 @@ const HomePage = () => {
         },
         body: JSON.stringify(explSets)
       });
-      const text = await response.json();
-      setRecSets(text.productRecommendations);
+      const { productRecommendations } = await response.json();
+      if (productRecommendations && productRecommendations.card_suggestions) {
+        // We extract card_suggestions directly from the response
+        setRecSets(productRecommendations.card_suggestions);
+      }
       setSecondTab(false);
-
     } catch (error) {
       console.error('Error fetching API response:', error);
       setSecondTab(false);
@@ -130,16 +125,16 @@ const HomePage = () => {
   };
 
   const handleRefresh = () => {
-    setRefresh(prev => !prev); // Toggle refresh to trigger useEffect
+    setRefresh(prev => !prev);
   };
 
-  const markdownText = `This demo illustrates how Machine Learning (ML) and Generative AI can enhance a credit card application process using MongoDB Atlas Vector Search with LLM.
-
-  **Credit card application demo:**  
-  Status Explanation: The “Status explanation” tab uses Generative AI to explain why the Credit Health status is categorized as Good/Approved or Bad/Rejected. This helps borrowers understand and improve their credit profile, especially if they are rejected.    
-  Product Recommendation: The “Product recommendations” tab, powered by Generative AI, suggests alternative credit card products tailored to the credit profile. This feature assists rejected applicants with alternative options and provides cross-sell opportunities for approved customers.  
+  const markdownText = `This demo illustrates how Machine Learning (ML) and Generative AI can enhance a credit card application process using MongoDB Atlas Vector Search with LLM.  
   
-  **User Navigation:**   
+  **Credit card application demo:**    
+  Status Explanation: The “Status explanation” tab uses Generative AI to explain why the Credit Health status is categorized as Good/Approved or Bad/Rejected. This helps borrowers understand and improve their credit profile, especially if they are rejected.      
+  Product Recommendation: The “Product recommendations” tab, powered by Generative AI, suggests alternative credit card products tailored to the credit profile. This feature assists rejected applicants with alternative options and provides cross-sell opportunities for approved customers.    
+    
+  **User Navigation:**     
   Credit Profile: Users can adjust and save their credit profile (on the left panel). Once saved, the profile is then evaluated by two credit scoring models: an ML-based model (Credit Health Status) and a simple linear regression model (Credit Score). Details of these models are available in the solution library documentation.`;
 
   const textSet1WithIframe = (
@@ -150,6 +145,7 @@ const HomePage = () => {
             src={'/images/Error.png'}
             alt="Description"
             style={{ marginRight: '10px', maxWidth: '40px', borderRadius: '10px', marginTop: '10px' }}
+            width={40} height={40}
           />
           <Body baseFontSize={16} as="pre" style={{ marginTop: '15px', fontSize: '19px', fontFamily: 'sans-serif' }}>
             Connexion error please refresh the page
@@ -174,13 +170,13 @@ const HomePage = () => {
                 border: 'none',
                 borderRadius: '8px',
                 boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)',
-                width: '155px', // Adjusted width
-                height: '85px', // Adjusted height
+                width: '155px',
+                height: '85px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                margin: '10px' // Added margin
+                margin: '10px'
               }}
             >
               {i < 5 && <H1>{Math.round(scorecardScoreFeatures[labels[i]] * 100)}</H1>}
@@ -209,7 +205,7 @@ const HomePage = () => {
         ) : (
           <div style={{ flex: 1 }}>
             <Header />
-            <Layout sidebar={<Sidebar profileInfo={data} />}  // Pass handleRefresh to Sidebar
+            <Layout sidebar={<Sidebar profileInfo={data} />}
               mainContent={
                 <div style={{ margin: '3%', marginTop: '30px' }}>
                   <ExpandableCard
@@ -239,9 +235,9 @@ const HomePage = () => {
                       <H3 style={{ color: '#00684A', display: 'inline', marginBottom: '50px' }}>&nbsp;APPROVED&nbsp;</H3>
                     </div>
                   )}
-                  <Tabs setSelected={setSelected} selected={selected} baseFontSize={16}>
+                  <Tabs setSelected={setSelected} selected={selected} baseFontSize={16} aria-label="Credit Scoring information tabs">
                     <Tab name="Status explanation" style={{ zIndex: 0 }}>{textSet1WithIframe}</Tab>
-                    <Tab disabled={SecondTab} name="Product recommendations" style={{ zIndex: 0 }}>
+                    <Tab disabled={secondTab} name="Product recommendations" style={{ zIndex: 0 }}>
                       <TextWithImage items={recSets} />
                     </Tab>
                   </Tabs>

@@ -8,11 +8,14 @@ import numpy as np
 from dummy import PrepareDummyCols
 from dotenv import load_dotenv
 from functools import lru_cache
-from llm_utils import invoke_llm, get_credit_score_expl, get_product_suggestions_1, get_credit_card_recommendations
+from llm_utils import invoke_llm, get_credit_score_expl, get_card_suggestions
 from stat_score_util import calculate_credit_score, calculate_percentile_given_value
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+import time
+from datetime import datetime
 
 import uvicorn
 
@@ -102,10 +105,25 @@ async def login(request: Request):
 
 @app.get("/credit_score/{user_id}")
 async def get_credit_score(user_id: int):
+
+    # Print the initial time when the function is called
+    start_time = time.time()
+    initial_time_utc = datetime.utcfromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+    print(f"Function called at: {initial_time_utc} UTC")
+
+    # Measure time for get_user_profile
+    profile_start_time = time.time()
     pred, allowed_credit_limit, user_profile_ip = get_user_profile(user_id)
+    print(f"Time taken for get_user_profile: {time.time() - profile_start_time:.4f} seconds")
+    
+    # Measure time for get_credit_score_expl
+    expl_start_time = time.time()
     response = get_credit_score_expl(
         user_profile_ip, pred, allowed_credit_limit, get_model_feature_imps()).strip()
+    print(f"Time taken for get_credit_score_expl: {time.time() - expl_start_time:.4f} seconds")
 
+    # Measure time for calculating IP features
+    ip_start_time = time.time()
     ip = {
         "Repayment History": (user_profile_ip["Credit_History_Age"] - user_profile_ip["Num_of_Delayed_Payment"]) / user_profile_ip["Credit_History_Age"],
         "Credit Utilization": 1 - (1 if (user_profile_ip["Credit_Utilization_Ratio"] / 100) > 0.4 else (user_profile_ip["Credit_Utilization_Ratio"] / 100)),
@@ -113,7 +131,14 @@ async def get_credit_score(user_id: int):
         "Outstanding": 1 - calculate_percentile_given_value(user_profile_ip['Outstanding_Debt'], 1426.220, 1155.129),
         "Num Credit Inquiries": 0 if calculate_percentile_given_value(user_profile_ip['Num_Credit_Inquiries'], 5.798, 3.868) > 0.8 else 1 - calculate_percentile_given_value(user_profile_ip['Num_Credit_Inquiries'], 5.798, 3.868)
     }
+    print(f"Time taken for calculating IP features: {time.time() - ip_start_time:.4f} seconds")
+
+    # Measure time for calculating credit score
+    score_start_time = time.time()
     scorecard_credit_score = calculate_credit_score(ip)
+    print(f"Time taken for calculate_credit_score: {time.time() - score_start_time:.4f} seconds")
+
+    print(f"Total time taken for /credit_score/{user_id}: {time.time() - start_time:.4f} seconds")
 
     return {
         "userProfile": response,
@@ -127,50 +152,47 @@ async def get_credit_score(user_id: int):
 
 @app.post("/product_suggestions")
 async def product_suggestions(request: Request):
+    start_time = time.time()
+    print(f"Function called at: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
+
     try:
-        # Attempt to parse the incoming JSON request
         data = await request.json()
-        # Extract data from the request
-        user_profile = data.get("userProfile")
-        user_id = data.get("userId")
-        pred = data.get("userCreditProfile")
-        allowed_credit_limit = data.get("allowedCreditLimit")
-        # Simple validation of required data fields
+        user_profile, user_id, pred, allowed_credit_limit = \
+            data.get("userProfile"), data.get("userId"), data.get("userCreditProfile"), data.get("allowedCreditLimit")
+
         if not all([user_profile, user_id, pred, allowed_credit_limit]):
             raise ValueError("Missing required fields in the request")
-        # Process the user profile information
+
+        profile_start_time = time.time()
         _, _, user_profile_ip = get_user_profile(user_id)
-        # Extract relevant fields from user profile IP
-        user_profile_ip_final = {k: user_profile_ip[k] for k in [
-            "Occupation", "Annual_Income", "Monthly_Inhand_Salary",
-            "Type_of_Loan", "Credit_Mix", "Payment_of_Min_Amount",
-            "Total_EMI_per_month", "Amount_invested_monthly", "Payment_Behaviour"
-        ] if k in user_profile_ip}
-        # Generate product suggestions and recommendations
-        card_suggestions = get_product_suggestions_1(
+        print(f"Time taken for get_user_profile: {time.time() - profile_start_time:.4f} seconds")
+
+        suggestions_start_time = time.time()
+        # Move parsing logic here instead for isolated timing
+        user_profile_ip_final = {
+            k: user_profile_ip[k] for k in [
+                "Occupation", "Annual_Income", "Monthly_Inhand_Salary",
+                "Type_of_Loan", "Credit_Mix", "Payment_of_Min_Amount",
+                "Total_EMI_per_month", "Amount_invested_monthly", "Payment_Behaviour"
+            ] if k in user_profile_ip
+        }
+
+        print(f"Time taken for extracting relevant fields: {time.time() - profile_start_time:.4f} seconds")
+        
+        card_suggestions_json = get_card_suggestions(
             user_profile, json.dumps(user_profile_ip_final), pred, allowed_credit_limit
         )
-        product_recommendations = get_credit_card_recommendations(
-            user_profile, json.dumps(user_profile_ip_final), pred,
-            allowed_credit_limit, card_suggestions
-        )
-        # Attempt to parse output recommendations into JSON
-        product_recommendations = product_recommendations.replace("\n", "").replace('\"', '"').strip()
-        product_recommendations_json = json.loads(product_recommendations)
-        # Return the JSON response
-        return JSONResponse(
-            content={"productRecommendations": product_recommendations_json},
-            headers={"Access-Control-Allow-Origin": "*"}
-        )
+        print(f"Time taken for generating card suggestions json: {time.time() - suggestions_start_time:.4f} seconds")
+
+        print("Parsed card suggestions JSON:")
+        print(card_suggestions_json)
+        print(f"Total time taken for /product_suggestions: {time.time() - start_time:.4f} seconds")
+
+        return JSONResponse(content={"productRecommendations": json.loads(card_suggestions_json)})
     except json.JSONDecodeError as e:
-        # Handle JSON parsing errors gracefully
         raise HTTPException(status_code=400, detail=f"JSON decode error: {str(e)}")
     except Exception as e:
-        # Handle general exceptions gracefully
-        return JSONResponse(
-            content={"error": "An error occurred while processing the request.", "details": str(e)},
-            status_code=500
-        )
+        return JSONResponse(content={"error": "An error occurred.", "details": str(e)}, status_code=500)
 
 
 if __name__ == "__main__":
