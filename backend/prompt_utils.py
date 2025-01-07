@@ -48,9 +48,11 @@ get_credit_score_expl_prompt = PromptTemplate.from_template(
     - Credit Health={pred}
     - Processed Credit Limit for the user={allowed_credit_limit}
 
+    Always keep the salary in mind, as it is an important factor in determining the credit limit. Do not omit this factor in your response.
+
     The output only contains the explanation in text format.
 
-    Explain the decision in detail for Credit Health and Processed Credit limit within 130 words: [Reason]
+    Explain the decision in detail for Credit Health and Processed Credit limit within 200 words: [Reason]
     """
 )
 

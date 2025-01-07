@@ -27,7 +27,7 @@ llm = Fireworks(
         temperature=0.000001,
         max_tokens=4096, 
         top_p=0.9, 
-        top_k=20
+        top_k=30
     )
 
 # Embedding model
