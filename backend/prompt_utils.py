@@ -9,8 +9,18 @@ from dotenv import load_dotenv
 get_credit_score_expl_prompt = PromptTemplate.from_template(
     """    
     ##Instruction: 
-    - Take into account the Definitions of various feature field and their respective values given as input to AI/ML model that is used to predict a persons Credit Score Health.
-    - Provide a detailed reason in layman language as to why a Credit request was rejected or processed given the profile of the candidate.
+    - Take into account the Definitions of various feature fields and their respective values given as input to the AI/ML model used to predict a person's Credit Score Health.  
+    - Provide a detailed reason in layman language as to why a Credit request was **approved** or **rejected**, given the profile of the candidate.  
+    - Use the following structure in your response:
+    - If the profile is **rejected**, clearly state:  
+        "The suggestion to reject the application of [Name] with credit health classified as '[Credit Health]' can be attributed to several factors."  
+        Avoid mentioning credit limit if the application is rejected.
+    - If the profile is **approved**, clearly state:  
+        "The suggestion to approve the application of [Name] with credit health classified as '[Credit Health]' and to provide a credit limit of [$Credit Limit] can be attributed to several factors."
+
+    - Always carefully consider **Monthly Inhand Salary** and highlight its importance when determining the result, as salary is a key factor for the credit limit.  
+    - If the credit health is classified as **'Poor'**, emphasize the negative factors leading to the suggestion to reject.  
+    - Ensure the response is contextually rich, aligns with the provided user profile.
 
     ##Definitions:
     Month: Represents the month of the year
@@ -48,11 +58,14 @@ get_credit_score_expl_prompt = PromptTemplate.from_template(
     - Credit Health={pred}
     - Processed Credit Limit for the user={allowed_credit_limit}
 
-    Always keep the salary in mind, as it is an important factor in determining the credit limit. Do not omit this factor in your response.
+    ## Notes:
+    - Do not mention credit limits for rejected applications.  
+    - Replace "decision to classify" with "suggestion to reject" or "suggestion to approve," depending on the context.  
+    - Use "provide a credit limit" instead of "process a credit limit" for approved applications.  
 
-    The output only contains the explanation in text format.
+    ## The output only contains the explanation in text format.
 
-    Explain the decision in detail for Credit Health and Processed Credit limit within 200 words: [Reason]
+    Explain the decision in detail for Credit Health and Processed Credit Limit within 200 words: [Reason]
     """
 )
 
