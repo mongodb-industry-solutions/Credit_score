@@ -208,6 +208,8 @@ const HomePage = () => {
             <Layout sidebar={<Sidebar profileInfo={data} />}
               mainContent={
                 <div style={{ margin: '3%', marginTop: '30px' }}>
+
+                  {/* 
                   <ExpandableCard
                     title="Instructions"
                     darkMode={false}
@@ -221,6 +223,9 @@ const HomePage = () => {
                       {markdownText}
                     </Markdown>
                   </ExpandableCard>
+
+                  */}
+                  
                   <H3 style={{ display: 'inline' }}>Credit Health Status : </H3>
                   {health === 'Poor' ? (
                     <div style={{ display: 'inline-block', borderRadius: '25px', background: '#FFCDC7', padding: '3px' }}>
