@@ -62,13 +62,13 @@ const Sidebar = ({ profileInfo }) => {
     <div>
       <div className={styles.sidebar}>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: '10%' }}>
-          <Image className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" width={100} height={100} />
+          <Image className={styles.profileImage} src={'/images/userAvatar.png'} alt="Profile" width={60} height={60} />
           {profileData && (
             <div style={{ marginTop: '10%', marginLeft: '5%' }}>
               <H3>{profileData.Name}</H3>
-              <Subtitle>{profileData.Occupation}</Subtitle>
-              <Subtitle>{profileData.Age} years</Subtitle>
-              <Subtitle>{profileData.Customer_ID}</Subtitle>
+              <Body>Occupation: {profileData.Occupation}</Body>
+              <Body>Age: {profileData.Age} years</Body>
+              <Body>Customer ID: {profileData.Customer_ID}</Body>
             </div>
           )}
         </div>
@@ -132,7 +132,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Body style={{ width: '25%' }}>
                   <strong>Credit Mix:</strong>
                 </Body>
-                <Body baseFontSize={9} style={{ width: '70%' }}>
+                <Body baseFontSize={9} style={{ width: '65%' }}>
                   <h3>{profileData.Credit_Mix}</h3>
                 </Body>
               </div>
@@ -140,7 +140,7 @@ const Sidebar = ({ profileInfo }) => {
                 <Body style={{ width: '25%' }}>
                   <strong>Type of Loan:</strong>
                 </Body>
-                <Body baseFontSize={9} style={{ width: '70%' }}>
+                <Body baseFontSize={9} style={{ width: '65%' }}>
                   <h3>{profileData.Type_of_Loan.replaceAll(',', ', ')}</h3>
                 </Body>
               </div>
@@ -148,13 +148,13 @@ const Sidebar = ({ profileInfo }) => {
                 <Body style={{ width: '25%' }}>
                   <strong>Payment Behaviour:</strong>
                 </Body>
-                <Body baseFontSize={9} style={{ width: '70%' }}>
+                <Body baseFontSize={9} style={{ width: '65%' }}>
                   <h3>{profileData.Payment_Behaviour.replaceAll('_', ' ')}</h3>
                 </Body>
               </div>
               <br />
               <div className={styles.profileItem}>
-                <Button style={{ width: '80%' }} onClick={handleSubmit} disabled={isSaving}>
+                <Button variant="primary" onClick={handleSubmit} disabled={isSaving}>
                   {isSaving ? 'Saving...' : 'Save Profile'}
                 </Button>
               </div>
@@ -169,7 +169,7 @@ const Sidebar = ({ profileInfo }) => {
 // Custom slider component
 const SliderItem = ({ label, field, value, max, handleSliderChange, showDollar = true }) => (
   <div className={styles.profileItem}>
-    <Body style={{ width: '20%' }}>
+    <Body style={{ width: '30%' }}>
       <strong>{label}:&nbsp;</strong>
     </Body>
     <Slider
@@ -177,7 +177,7 @@ const SliderItem = ({ label, field, value, max, handleSliderChange, showDollar =
       onChange={(val) => handleSliderChange(val, field)}
       max={max}
       min={0}
-      style={{ width: '55%' }}
+      style={{ width: '40%' }}
       trackStyle={{ backgroundColor: 'green' }}
       handleStyle={{ borderColor: 'white', backgroundColor: 'black' }}
     />

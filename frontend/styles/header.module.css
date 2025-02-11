@@ -31,8 +31,8 @@
 
 .logout-container {
   flex: 1; 
-  display: flex; 
-  position: absolute;
-  right: 30px;
+  display:flex; 
+  position:absolute;
+  right: 40px;
   top: 22px; 
 }
