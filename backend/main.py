@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 import uvicorn
 
@@ -108,7 +108,7 @@ async def get_credit_score(user_id: int):
 
     # Print the initial time when the function is called
     start_time = time.time()
-    initial_time_utc = datetime.utcfromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+    initial_time_utc = datetime.fromtimestamp(start_time, tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     print(f"Function called at: {initial_time_utc} UTC")
 
     # Measure time for get_user_profile
@@ -153,7 +153,7 @@ async def get_credit_score(user_id: int):
 @app.post("/product_suggestions")
 async def product_suggestions(request: Request):
     start_time = time.time()
-    print(f"Function called at: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC")
+    print(f"Function called at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC")
 
     try:
         data = await request.json()
