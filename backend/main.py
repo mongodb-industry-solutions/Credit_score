@@ -140,6 +140,13 @@ async def get_credit_score(user_id: int):
 
     print(f"Total time taken for /credit_score/{user_id}: {time.time() - start_time:.4f} seconds")
 
+    print(f"User profile: {response}")
+    print(f"User credit profile: {pred}")
+    print(f"Allowed credit limit: {allowed_credit_limit}")
+    print(f"Scorecard credit score: {scorecard_credit_score}")
+    print(f"Scorecard score features: {ip}")
+    print(f"User ID: {user_id}")
+
     return {
         "userProfile": response,
         "userCreditProfile": pred,
@@ -160,7 +167,13 @@ async def product_suggestions(request: Request):
         user_profile, user_id, pred, allowed_credit_limit = \
             data.get("userProfile"), data.get("userId"), data.get("userCreditProfile"), data.get("allowedCreditLimit")
 
+        print(f"User profile: {user_profile}")
+        print(f"User ID: {user_id}")
+        print(f"User credit profile: {pred}")
+        print(f"Allowed credit limit: {allowed_credit_limit}")
+        
         if not all([user_profile, user_id, pred, allowed_credit_limit]):
+            print("Error: Missing required fields in the request or credit limit = 0")
             raise ValueError("Missing required fields in the request")
 
         profile_start_time = time.time()
