@@ -12,8 +12,6 @@ Next, please make sure to add a .env file in the folder <location_of_your_repo>/
 It should include the following :
 
 ```md
-MONGODB_URI=<your_MONGODB_URI>
-NEXT_PUBLIC_MONGODB_DB=bfsi-genai
 NEXT_PUBLIC_API_URL=http://localhost:8000
 NODE_ENV=development
 NEXT_PUBLIC_CHART_URL=<Your_CHART_URL>
