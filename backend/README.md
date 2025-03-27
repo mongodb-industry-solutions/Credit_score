@@ -4,22 +4,33 @@ These are some simple APIs built on Python.
 
 ## Getting Started
 
+Activate virtual environment
+
+```bash
+python3.13 -m venv venv
+source venv/bin/activate 
+```
+
 First, make sure that you have all of the requirements installed in your Python instance:
 
 ```bash
 pip install -r requirements.txt
 # or
 pip3 install -r requirements.txt
+
+# In case you need to reproduce
+# pip3 install scipy langchain langchain-mongodb langchain-voyageai langchain-fireworks langchain-openai pandas joblib numpy dotenv fastapi uvicorn scikit-learn xgboost
 ```
+
 Next, please make sure to add a .env file in the folder <location_of_your_repo>/Credit_score/backend. It should include the following:
 
 ```md
 MONGO_CONNECTION_STRING=<Your_connection_string>
+MONGODB_DB=bfsi-genai
+MONGODB_COLLECTION=cc_products_voyage
 FIREWORKS_API_KEY=<Your_FIREWORKS_api_key>
-MONGODB_DB=bfsi-genai 
+VOYAGE_API_KEY=<Your_VOYAGE_api_key>
 ```
-> [!Warning]
-> You only need to populate one of the API keys depending on which one you choose. As a reminder, you can also decide to use OpenAI but will require some light code changes. You will also need to use the file OpenAI.py instead of app.py.
 
 Lastly, run the bankend services:
 
@@ -30,10 +41,12 @@ python3 main.py
 # or if you are running it on a server
 pm2 start main.py --interpreter=python3
 ```
+
 > [!Note]
 > If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.
 
 You should have two APIs:
+
 - http://localhost:8000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
 - http://localhost:8000/product_suggestions
 
@@ -44,5 +57,6 @@ The second API is slightly more complicated. Indeed, the user's profile from the
 ![image](./Recomendations.png)
 
 Once you have done everything, we can move on to the next part:
+
 - [Installation of the frontend](../frontend/)
 - Or go back [to the main page](../)

@@ -1,8 +1,8 @@
 from langchain_core.prompts import PromptTemplate
 from typing import List
 
-from langchain.output_parsers import PydanticOutputParser, OutputFixingParser
-from langchain_core.pydantic_v1 import BaseModel, Field, validator
+from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel, Field, model_validator
 import os
 from dotenv import load_dotenv
 
