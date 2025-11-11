@@ -5,11 +5,9 @@ import Button from '@leafygreen-ui/button';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import axios from 'axios';
+import UserDataAPIClient from '../utils/api/user-data/api-client';
 
 const Sidebar = ({ profileInfo }) => {
-  const router = useRouter();
 
   // Combined state for all profile data
   const [profileData, setProfileData] = useState({ ...profileInfo });
@@ -26,30 +24,21 @@ const Sidebar = ({ profileInfo }) => {
   const handleSubmit = async () => {
     setIsSaving(true);
     try {
-      let clientId = localStorage.getItem('clientId') || router.query.clientid;
-      if (!clientId) {
-        console.error('Client ID is missing');
-        alert('Client ID is required. Please log in again.');
-        return;
-      }
+      // Always use default user ID 8625 for demo
+      const clientId = 8625;
       // Clone profileData and remove _id
       const { _id, ...updateData } = profileData;
-      const apiUrl = '/api/updateOne';
-      const body = {
-        filter: { Customer_ID: parseInt(clientId, 10) },
-        update: { $set: updateData },
-      };
-      console.log('Submitting updated profile:', body);
-      const response = await axios.post(apiUrl, body, {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.status === 200) {
-        console.log('Profile updated successfully:', response.data);
-        window.location.reload();
-      } else {
-        console.error('Failed to update profile:', response.data);
-        alert('Failed to save profile. Please try again.');
-      }
+      
+      console.log('Submitting updated profile:', { filter: { Customer_ID: parseInt(clientId, 10) }, update: { $set: updateData } });
+      
+      // Use API client which calls Next.js proxy route
+      const result = await UserDataAPIClient.updateOne(
+        { Customer_ID: parseInt(clientId, 10) },
+        { $set: updateData }
+      );
+      
+      console.log('Profile updated successfully:', result);
+      window.location.reload();
     } catch (error) {
       console.error('An error occurred while saving:', error);
       alert('An unexpected error occurred. Please try again.');

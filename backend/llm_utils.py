@@ -31,17 +31,36 @@ llm = Fireworks(
         top_k=30
     )
 
-# Embedding model
-embedding_model = VoyageAIEmbeddings(
-    voyage_api_key=os.environ.get("VOYAGE_API_KEY"), model="voyage-3-large"
-)
+# Embedding model - lazy initialization
+_embedding_model = None
+_vector_store = None
 
-# Vector Store declaration
-vector_store = MongoDBAtlasVectorSearch(
-    embedding=embedding_model,
-    collection=vcol,
-    index_name="default"
-)
+def get_embedding_model():
+    """Lazy initialization of embedding model."""
+    global _embedding_model
+    if _embedding_model is None:
+        voyage_api_key = os.environ.get("VOYAGE_API_KEY")
+        if not voyage_api_key:
+            raise ValueError(
+                "VOYAGE_API_KEY environment variable is not set. "
+                "Please set it in your .env file or environment variables."
+            )
+        _embedding_model = VoyageAIEmbeddings(
+            voyage_api_key=voyage_api_key, 
+            model="voyage-3-large"
+        )
+    return _embedding_model
+
+def get_vector_store():
+    """Lazy initialization of vector store."""
+    global _vector_store
+    if _vector_store is None:
+        _vector_store = MongoDBAtlasVectorSearch(
+            embedding=get_embedding_model(),
+            collection=vcol,
+            index_name="default"
+        )
+    return _vector_store
 
 @lru_cache(1000000)
 def invoke_llm(prompt):
@@ -107,6 +126,7 @@ def get_card_suggestions(user_profile, user_profile_ip, pred, allowed_credit_lim
     print(f"search_term_suggestion: {search_term_suggestion}")
 
     try:
+        vector_store = get_vector_store()
         recs = vector_store.similarity_search(query=search_term_suggestion, k=5, oversampling_factor=10, include_scores=True)
         print()
         print("Retrieved relevant documents for card suggestions:")

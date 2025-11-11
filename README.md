@@ -22,7 +22,7 @@ The installation is divided into five:
 
 - [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/)
 - [Insert the two file in ./data folder with mongoDB compass on a database called "bfsi-genai"](https://www.mongodb.com/docs/compass/current/documents/insert/)
-- Create your own [search index](https://www.mongodb.com/docs/atlas/atlas-search/create-index/) called "default" on the cc_products collection.
+- Create your own [search index](https://www.mongodb.com/docs/atlas/atlas-search/create-index/) called "default" on the cc_products_voyage collection.
 
 ```json
 {
@@ -44,13 +44,20 @@ The installation is divided into five:
 - [Installation of the backend](./backend/)
 - [Installation of the frontend](./frontend/)
 
-### Build the backend and frontend with Docker (faster)
+### Build the backend and frontend with Docker (recommended)
 
-To build the Docker images and start the services, run the following command:
+**Prerequisites:**
+- Create `.env` files:
+  - `backend/.env` - MongoDB connection, API keys (see [backend README](./backend/README.md))
+  - `frontend/.env` - API URL configuration (see [frontend README](./frontend/README.md))
 
-```
+To build the Docker images and start the services:
+
+```bash
 make build
 ```
+
+**Note:** The frontend uses a Next.js proxy pattern - all API calls go through Next.js API routes, eliminating CORS issues. MongoDB is only required on the backend.
 
 ### Stopping the Application
 
@@ -94,3 +101,7 @@ This product is not a MongoDB official product. Use at your own risk!
 - Paul Claret, Senior Specialist, Industry Solutions, MongoDB
 
 Feel free to refer to [the original repo](https://github.com/ashwin-gangadhar-mdb/mdb-bfsi-genai/tree/main/) for more content like this one.
+
+## 📄 License
+
+See [LICENSE](LICENSE) file for details.

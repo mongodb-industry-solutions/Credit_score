@@ -1,0 +1,13 @@
+env:
+  NODE_ENV: prod
+  INTERNAL_API_URL: http://credit-scoring-web-app:80
+  
+envSecrets:
+  NEXT_PUBLIC_API_URL: credit-scoring-ui
+  NODE_ENV: credit-scoring-ui
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-prod-cicd-irsa"

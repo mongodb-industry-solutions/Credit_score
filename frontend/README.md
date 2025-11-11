@@ -8,18 +8,35 @@ First, make sure that you have npm or yarn installed in your computer, if you do
 - [npm installation](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [yarn installation](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable)
 
-Next, please make sure to add a .env file in the folder <location_of_your_repo>/Credit_score/frontend.
-It should include the following :
+Next, please make sure to add a `.env` file in the folder `<location_of_your_repo>/Credit_score/frontend`.
 
-```md
-NEXT_PUBLIC_API_URL=http://localhost:8000
-NODE_ENV=development
+**⚠️ IMPORTANT:** Never commit your `.env` file to version control! It may contain sensitive configuration.
+
+Create your `.env` file with the following variables:
+
+```bash
+# Backend API URL (for browser-side calls)
+# This is embedded at build time and visible to users
+# ⚠️ WARNING: This value is embedded in the JavaScript bundle
+NEXT_PUBLIC_API_URL=http://localhost:8080
+
+# Node environment
+NODE_ENV=dev
+
+# MongoDB Charts URL (optional - for displaying charts)
+# Get this from MongoDB Atlas Charts embedding settings
 NEXT_PUBLIC_CHART_URL=<Your_CHART_URL>
 ```
 
+> [!Warning]
+> Replace `<Your_CHART_URL>` with your actual MongoDB Charts URL if you want to display charts. The `.env` file is gitignored and will not be committed to the repository.
+
 > [!Note]
-> if the backend was deployed into a server then you have to put the server's IP address in the NEXT_PUBLIC_API_URL above.
-> If you want to display a chart here you can do so by following the optional instructions down below.
+> - **MongoDB is NOT required on the frontend** - All database operations are handled by the backend API via proxy routes
+> - The frontend uses Next.js API proxy pattern - all backend calls go through `/api/*` routes (no CORS issues)
+> - API clients are in `utils/api/` - use these instead of direct fetch calls
+> - If the backend was deployed to a server, update `NEXT_PUBLIC_API_URL` in `.env` and rebuild
+> - If you want to display a chart, follow the optional instructions below
 
 Lastly, run the development server:
 
@@ -30,7 +47,7 @@ yarn dev
 ```
 
 Once you have done everything, we can move on to the next part:
-- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Open [http://localhost:8080](http://localhost:8080) with your browser to see the result.
 - Or go back [to the main page](../)
 
 
