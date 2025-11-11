@@ -1,6 +1,6 @@
 env:
   NODE_ENV: staging
-  INTERNAL_API_URL: http://credit-scoring:80
+  INTERNAL_API_URL: http://credit-scoring-web-app:80
   
 envSecrets:
   NEXT_PUBLIC_API_URL: credit-scoring-ui
