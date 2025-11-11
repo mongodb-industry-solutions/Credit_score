@@ -1,0 +1,16 @@
+env:
+  NODE_ENV: prod
+  
+envSecrets:
+  MONGODB_DB: credit-scoring
+  MONGO_CONNECTION_STRING: credit-scoring
+  VOYAGE_API_KEY: credit-scoring
+  FIREWORKS_API_KEY: credit-scoring
+  MONGODB_COLLECTION: credit-scoring
+  NODE_ENV: credit-scoring
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-prod-cicd-irsa"

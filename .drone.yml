@@ -1,0 +1,234 @@
+###########################
+# BACKEND STAGING PIPELINE
+###########################
+---
+kind: pipeline
+type: kubernetes
+name: backend-staging
+
+trigger:
+  branch:
+    - staging
+
+steps:
+  - name: publish-backend-staging
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/credit-scoring
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      dockerfile: Dockerfile.backend
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-backend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: credit-scoring
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/credit-scoring"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=credit-scoring.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+      values_files: [ "environments/backend-staging.yaml" ]
+    when:
+      event:
+        - push
+###########################
+# BACKEND PROD PIPELINE
+###########################
+---
+kind: pipeline
+type: kubernetes
+name: backend-prod
+
+trigger:
+  branch:
+    - main
+
+steps:
+  - name: publish-backend-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/credit-scoring
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      dockerfile: Dockerfile.backend
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-backend-prod
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: credit-scoring
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/credit-scoring"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=credit-scoring.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+      values_files: [ "environments/backend-prod.yaml" ]
+    when:
+      event:
+        - push
+###########################
+# FRONTEND STAGING PIPELINE
+###########################
+---
+kind: pipeline
+type: kubernetes
+name: frontend-staging
+
+trigger:
+  branch:
+    - staging
+
+steps:
+  - name: publish-frontend-staging
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/credit-scoring-ui
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      dockerfile: Dockerfile.frontend
+      build_args:
+        - NEXT_PUBLIC_API_URL=https://credit-scoring.industrysolutions.staging.corp.mongodb.com
+        - NODE_ENV=staging
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-frontend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: credit-scoring-ui
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/credit-scoring-ui"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=credit-scoring-ui.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        # Note: NEXT_PUBLIC_API_URL is set at build time via build_args, not here
+        # INTERNAL_API_URL is set in environments/frontend-staging.yaml
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+      values_files: [ "environments/frontend-staging.yaml" ]
+    when:
+      event:
+        - push
+###########################
+# FRONTEND PROD PIPELINE
+###########################
+---
+kind: pipeline
+type: kubernetes
+name: frontend-prod
+
+trigger:
+  branch:
+    - main
+
+steps:
+  - name: publish-frontend-prod
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/credit-scoring-ui
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - prod-latest
+      dockerfile: Dockerfile.frontend
+      build_args:
+        - NEXT_PUBLIC_API_URL=https://credit-scoring.industrysolutions.prod.corp.mongodb.com
+        - NODE_ENV=prod
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-frontend-prod
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: credit-scoring-ui
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/credit-scoring-ui"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=credit-scoring-ui.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+        # Note: NEXT_PUBLIC_API_URL is set at build time via build_args, not here
+        # INTERNAL_API_URL is set in environments/frontend-prod.yaml
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+      values_files: [ "environments/frontend-prod.yaml" ]
+    when:
+      event:
+        - push

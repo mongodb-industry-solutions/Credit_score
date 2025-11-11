@@ -1,0 +1,45 @@
+[project]
+name = "credit-score-backend"
+version = "0.1.0"
+description = "GenAI Credit Scoring Demo Backend"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    # Core web framework
+    "fastapi==0.115.11",
+    "uvicorn==0.34.0",
+    
+    # MongoDB
+    "pymongo==4.11.2",
+    
+    # ML/AI libraries
+    "pandas==2.2.3",
+    "numpy==2.2.3",
+    "scipy==1.15.2",
+    "scikit-learn==1.6.1",
+    "xgboost==2.1.4",
+    "joblib==1.4.2",
+    
+    # LangChain ecosystem (for LLM and vector search)
+    "langchain==0.3.20",
+    "langchain-core==0.3.43",
+    "langchain-fireworks==0.2.7",
+    "langchain-mongodb==0.5.0",
+    "langchain-voyageai==0.1.3",
+    
+    # LLM providers
+    "fireworks-ai==0.15.12",
+    "voyageai==0.2.4",
+    
+    # Data validation
+    "pydantic==2.10.6",
+    
+    # Environment management
+    "python-dotenv==1.0.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
