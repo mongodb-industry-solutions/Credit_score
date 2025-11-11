@@ -10,6 +10,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Markdown from 'react-markdown';
+import CreditScoreAPIClient from '../utils/api/credit-score/api-client';
+import ProductsAPIClient from '../utils/api/products/api-client';
+import UserDataAPIClient from '../utils/api/user-data/api-client';
 
 const HomePage = () => {
   const [data, setData] = useState(null);
@@ -36,8 +39,8 @@ const HomePage = () => {
 
   useEffect(() => {
     if (router.isReady) {
-      const clientId = localStorage.getItem('clientId') || 8625;
-      localStorage.setItem('clientId', clientId);
+      // Always use default user ID 8625 for demo
+      const clientId = 8625;
       fetchProfileData(clientId);
       fetchExpl(clientId);
     }
@@ -51,23 +54,15 @@ const HomePage = () => {
 
   const fetchProfileData = async (clientId) => {
     try {
-      const response = await fetch('/api/findOne', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          filter: { Customer_ID: parseInt(clientId, 10) },
-        }),
+      // Use API client which calls Next.js proxy route
+      const jsonData = await UserDataAPIClient.findOne({
+        Customer_ID: parseInt(clientId, 10),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data. Status: ${response.status}`);
-      }
-
-      const jsonData = await response.json();
-      if (!jsonData || Object.keys(jsonData).length === 0 || clientId === NaN) {
-        window.location.href = '/login';
+      if (!jsonData || Object.keys(jsonData).length === 0) {
+        console.error('No user data found for client ID:', clientId);
+        setError(true);
+        setLoading(false);
         return;
       }
 
@@ -82,14 +77,8 @@ const HomePage = () => {
 
   const fetchExpl = async (clientId) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const response = await fetch(`${apiUrl}/credit_score/${clientId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      const text = await response.json();
+      // Use API client which calls Next.js proxy route
+      const text = await CreditScoreAPIClient.getCreditScore(clientId);
       setExplSets(text);
       setLoading2(false);
       setHealth(text.userCreditProfile);
@@ -104,15 +93,9 @@ const HomePage = () => {
 
   const fetchRec = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const response = await fetch(`${apiUrl}/product_suggestions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(explSets)
-      });
-      const { productRecommendations } = await response.json();
+      // Use API client which calls Next.js proxy route
+      const response = await ProductsAPIClient.getProductSuggestions(explSets);
+      const { productRecommendations } = response;
       if (productRecommendations && productRecommendations.card_suggestions) {
         // We extract card_suggestions directly from the response
         setRecSets(productRecommendations.card_suggestions);

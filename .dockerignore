@@ -75,6 +75,10 @@ backend/*.py[cod]
 backend/.venv
 backend/venv
 
+# UV files
+backend/uv.lock
+backend/.uv-cache
+
 # Distribution / packaging
 backend/.Python
 backend/build/

@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import styles from '../styles/header.module.css';
 import { MongoDBLogoMark } from '@leafygreen-ui/logo';
-import { H2, Body, Link } from '@leafygreen-ui/typography';
+import { H2, Body } from '@leafygreen-ui/typography';
 //import Link from 'next/link';
 import InfoWizard from "./InfoWizard/InfoWizard";
 
@@ -81,7 +81,6 @@ function Header() {
             },
           ]}
         />
-        <Link href="/login">Log Out</Link>
       </div>
     </div>
 

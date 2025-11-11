@@ -4,51 +4,101 @@ These are some simple APIs built on Python.
 
 ## Getting Started
 
-Activate virtual environment
+This project uses [uv](https://github.com/astral-sh/uv) as the package manager for faster dependency resolution and installation.
+
+### Install UV
+
+First, install `uv` if you haven't already:
 
 ```bash
-python3.13 -m venv venv
-source venv/bin/activate 
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-First, make sure that you have all of the requirements installed in your Python instance:
+Or use the makefile command:
 
 ```bash
-pip install -r requirements.txt
-# or
-pip3 install -r requirements.txt
-
-# In case you need to reproduce
-# pip3 install scipy langchain langchain-mongodb langchain-voyageai langchain-fireworks langchain-openai pandas joblib numpy dotenv fastapi uvicorn scikit-learn xgboost
+make install_uv
 ```
 
-Next, please make sure to add a .env file in the folder <location_of_your_repo>/Credit_score/backend. It should include the following:
+### Setup Virtual Environment and Install Dependencies
 
-```md
-MONGO_CONNECTION_STRING=<Your_connection_string>
-MONGODB_DB=bfsi-genai
-MONGODB_COLLECTION=cc_products_voyage
-FIREWORKS_API_KEY=<Your_FIREWORKS_api_key>
-VOYAGE_API_KEY=<Your_VOYAGE_api_key>
-```
-
-Lastly, run the bankend services:
+Navigate to the backend directory and set up the environment:
 
 ```bash
-python main.py
-# or
-python3 main.py
-# or if you are running it on a server
-pm2 start main.py --interpreter=python3
+cd backend
+uv venv
+uv sync
+```
+
+Or use the makefile commands:
+
+```bash
+make uv_init    # Create virtual environment
+make uv_sync    # Install dependencies
+```
+
+### Environment Configuration
+
+Next, please make sure to add a `.env` file in the folder `<location_of_your_repo>/Credit_score/backend`. 
+
+**⚠️ IMPORTANT:** Never commit your `.env` file to version control! It contains sensitive credentials.
+
+Create your `.env` file with the following variables:
+
+```bash
+# MongoDB Atlas Connection String
+# Get your connection string from: https://cloud.mongodb.com/
+MONGO_CONNECTION_STRING=
+
+# MongoDB Database Name
+MONGODB_DB=
+
+# MongoDB Collection Name (for vector search)
+MONGODB_COLLECTION=
+
+# Fireworks AI API Key
+# Sign up for free at: https://fireworks.ai/login
+FIREWORKS_API_KEY=
+
+# Voyage AI API Key (for embeddings)
+# Get your API key from: https://www.voyageai.com/
+VOYAGE_API_KEY=
+```
+
+> [!Warning]
+> Replace all placeholder values with your actual credentials. The `.env` file is gitignored and will not be committed to the repository.
+
+### Running the Backend
+
+Run the backend services using `uv`:
+
+```bash
+cd backend
+uv run uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+Or use the makefile command:
+
+```bash
+make uv_run
 ```
 
 > [!Note]
-> If you want to deploy this on a server, then you will need to install pm2, on top of the requirements. You will also need to call the APIs with the server's API which will need to be updated on the <location_of_your_repo>/Credit_score/frontend/.env file.
+> - All MongoDB operations are handled by the backend, the frontend does not connect directly to MongoDB
+> - The frontend communicates with backend via Next.js proxy routes (no CORS issues)
 
-You should have two APIs:
+### API Endpoints
 
-- http://localhost:8000/credit_score?userId=<id_of_the_user_you_want_recomendation_for>
-- http://localhost:8000/product_suggestions
+**Credit Scoring:**
+- `GET /credit_score/{user_id}` - Get credit score explanation and calculations
+- `POST /product_suggestions` - Get product recommendations based on user profile
+
+**User Data (for frontend):**
+- `POST /user_data/find_one` - Find a user document (used by frontend)
+- `POST /user_data/update_one` - Update a user document (used by frontend)
+
+**Health Check:**
+- `GET /` - Server status check
 
 As a reminder, in this demo we use both AI as well as genAI. Below you can see the architecture of the first API. Simply put, we generate a custom prompt by enriching the existing information on the MongoDB database with the ML algorithm that we trained prior. This is then sent to the LLM to generate the explanation for the approval/rejection of the user's application.
 ![image](./Explainations.png)

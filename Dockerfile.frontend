@@ -1,8 +1,22 @@
 FROM node:20.10.0
+
+# Accept build arguments (passed from Drone)
+ARG NEXT_PUBLIC_API_URL=http://localhost:8080
+ARG NODE_ENV=dev
+
+# Set environment variables for Next.js build process
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NODE_ENV=$NODE_ENV
+
 WORKDIR /app
 COPY frontend/package*.json ./
-RUN npm i --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 COPY frontend/ .
-RUN npm run build  
-EXPOSE 3000
-CMD ["npm", "start"]
+
+# Set the port environment variable for Next.js
+ENV PORT=8080
+
+RUN npm run build
+
+EXPOSE 8080
+CMD ["npm", "run", "start"]
