@@ -399,9 +399,6 @@ cython_debug/
 
 # ===== FRONTEND (Next.js/Node.js) =====
 
-# Exclude frontend directory entirely
-frontend
-
 # Dependencies
 frontend/node_modules
 frontend/.pnp
@@ -415,7 +412,7 @@ frontend/.yarn/*
 # Testing
 frontend/coverage
 
-# Next.js
+# Next.js build output
 frontend/.next/
 frontend/out/
 
@@ -429,13 +426,16 @@ frontend/yarn-error.log*
 
 # Environment files
 frontend/.env*
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
 
 # Vercel
 frontend/.vercel
 
 # TypeScript
 frontend/*.tsbuildinfo
-frontend/next-env.d.ts
 
 # Misc
 *.pem
