@@ -83,15 +83,8 @@ Or use the makefile command:
 make uv_run
 ```
 
-For production deployment on a server:
-
-```bash
-pm2 start "uv run uvicorn main:app --host 0.0.0.0 --port 8080" --name credit-score-backend
-```
-
 > [!Note]
-> - All MongoDB operations are handled by the backend - the frontend does not connect directly to MongoDB
-> - For production deployment, use pm2 or similar process manager
+> - All MongoDB operations are handled by the backend, the frontend does not connect directly to MongoDB
 > - The frontend communicates with backend via Next.js proxy routes (no CORS issues)
 
 ### API Endpoints
