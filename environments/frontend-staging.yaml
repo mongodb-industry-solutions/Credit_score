@@ -1,10 +1,9 @@
 env:
   NODE_ENV: staging
   INTERNAL_API_URL: http://credit-scoring-web-app:80
-  
-envSecrets:
-  NEXT_PUBLIC_API_URL: credit-scoring-ui
-  NODE_ENV: credit-scoring-ui
+
+# Note: NEXT_PUBLIC_API_URL is set at build time via Drone build_args
+# No envSecrets needed for frontend - remove incorrect secret references
 
 serviceAccount:
   enabled: true

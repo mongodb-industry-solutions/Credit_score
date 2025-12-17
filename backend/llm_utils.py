@@ -21,13 +21,14 @@ MONGO_COLL_NAME=os.environ.get("MONGODB_COLLECTION")
 client = MongoClient(MONGO_CONN)
 vcol = client[MONGO_DB_NAME][MONGO_COLL_NAME]
 
-# https://fireworks.ai/models/fireworks/llama-v3p1-405b-instruct
+# https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct
+# Llama 3.3 70B: Similar performance to 3.1 405B but ~88% cheaper and faster
 llm = Fireworks(
         fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
-        model="accounts/fireworks/models/llama-v3p1-405b-instruct",
+        model="accounts/fireworks/models/llama-v3p3-70b-instruct",
         temperature=0.000001,
-        max_tokens=4096, 
-        top_p=0.9, 
+        max_tokens=4096,
+        top_p=0.9,
         top_k=30
     )
 
