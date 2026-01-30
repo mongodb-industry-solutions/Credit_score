@@ -21,7 +21,7 @@ dependencies = [
     
     # LangChain ecosystem (for LLM and vector search)
     "langchain==0.3.20",
-    "langchain-core==0.3.43",
+    "langchain-core==0.3.81",
     "langchain-fireworks==0.2.7",
     "langchain-mongodb==0.5.0",
     "langchain-voyageai==0.1.3",
