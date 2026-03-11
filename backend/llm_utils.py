@@ -27,7 +27,7 @@ llm = Fireworks(
         fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
         model="accounts/fireworks/models/llama-v3p3-70b-instruct",
         temperature=0.000001,
-        max_tokens=4096,
+        max_tokens=300,
         top_p=0.9,
         top_k=30
     )
