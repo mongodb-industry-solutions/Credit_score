@@ -21,11 +21,16 @@ MONGO_COLL_NAME=os.environ.get("MONGODB_COLLECTION")
 client = MongoClient(MONGO_CONN)
 vcol = client[MONGO_DB_NAME][MONGO_COLL_NAME]
 
-# https://fireworks.ai/models/fireworks/llama-v3p3-70b-instruct
-# Llama 3.3 70B: Similar performance to 3.1 405B but ~88% cheaper and faster
+# Model is configurable via FIREWORKS_MODEL (set in environments/*.yaml).
+# Default is Llama 4 Maverick; llama-v3p3-70b-instruct was retired from the
+# Fireworks serverless tier (returned model NOT_FOUND).
+# https://fireworks.ai/models?show=Serverless
 llm = Fireworks(
         fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
-        model="accounts/fireworks/models/llama-v3p3-70b-instruct",
+        model=os.environ.get(
+            "FIREWORKS_MODEL",
+            "accounts/fireworks/models/llama4-maverick-instruct-basic",
+        ),
         temperature=0.000001,
         max_tokens=300,
         top_p=0.9,
