@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import json
 
-from langchain_fireworks import Fireworks 
+from langchain_fireworks import ChatFireworks
 from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_voyageai import VoyageAIEmbeddings
 
@@ -21,20 +21,18 @@ MONGO_COLL_NAME=os.environ.get("MONGODB_COLLECTION")
 client = MongoClient(MONGO_CONN)
 vcol = client[MONGO_DB_NAME][MONGO_COLL_NAME]
 
-# Model is configurable via FIREWORKS_MODEL (set in environments/*.yaml).
-# Default is Llama 4 Maverick; llama-v3p3-70b-instruct was retired from the
-# Fireworks serverless tier (returned model NOT_FOUND).
-# https://fireworks.ai/models?show=Serverless
-llm = Fireworks(
+# Model is configurable via FIREWORKS_MODEL (ksec secret / environments/*.yaml).
+# Uses the chat endpoint: all Fireworks serverless models are chat models
+# (supports_chat=true) and Meta Llama was retired from serverless. The old
+# text-completion path (Fireworks) leaked reasoning/harmony tokens into output.
+# Default is GPT-OSS 120B (cheapest available). https://fireworks.ai/models
+llm = ChatFireworks(
         fireworks_api_key=os.environ.get("FIREWORKS_API_KEY"),
-        model=os.environ.get(
-            "FIREWORKS_MODEL",
-            "accounts/fireworks/models/llama4-maverick-instruct-basic",
-        ),
+        model=os.environ.get("FIREWORKS_MODEL")
+              or "accounts/fireworks/models/gpt-oss-120b",
         temperature=0.000001,
         max_tokens=300,
-        top_p=0.9,
-        top_k=30
+        model_kwargs={"top_p": 0.9},
     )
 
 # Embedding model - lazy initialization
@@ -77,7 +75,7 @@ def invoke_llm(prompt):
         prompt (str): The prompt to pass to the LLM.
     """
     response = llm.invoke(prompt)
-    return response
+    return response.content
 
 def get_credit_score_expl(user_profile_ip, pred, allowed_credit_limit, feature_importance):
     """

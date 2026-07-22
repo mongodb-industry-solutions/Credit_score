@@ -440,3 +440,4 @@ frontend/*.tsbuildinfo
 # Misc
 *.pem
 backend/uv.lock
+setup-drone-secrets.sh
