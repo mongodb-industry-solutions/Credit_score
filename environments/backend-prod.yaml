@@ -1,11 +1,12 @@
 env:
   NODE_ENV: prod
-  
+
 envSecrets:
   MONGODB_DB: credit-scoring
   MONGO_CONNECTION_STRING: credit-scoring
   VOYAGE_API_KEY: credit-scoring
   FIREWORKS_API_KEY: credit-scoring
+  FIREWORKS_MODEL: credit-scoring
   MONGODB_COLLECTION: credit-scoring
   NODE_ENV: credit-scoring
 
