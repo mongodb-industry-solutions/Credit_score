@@ -24,6 +24,7 @@ const HomePage = () => {
   const [explSets, setExplSets] = useState({ userProfile: "" });
   const [recSets, setRecSets] = useState([]); // Ensure recSets is initialized as an array
   const [error, setError] = useState(false);
+  const [explError, setExplError] = useState(null);
   const [health, setHealth] = useState(null);
   const [scorecardScoreFeatures, setScorecardScoreFeatures] = useState({
     "Repayment History": 0,
@@ -80,6 +81,7 @@ const HomePage = () => {
       // Use API client which calls Next.js proxy route
       const text = await CreditScoreAPIClient.getCreditScore(clientId);
       setExplSets(text);
+      setExplError(null);
       setLoading2(false);
       setHealth(text.userCreditProfile);
       setScorecardScoreFeatures(text.scorecardScoreFeatures);
@@ -87,6 +89,8 @@ const HomePage = () => {
 
     } catch (error) {
       setLoading2(false);
+      // Surface the failure so it is not a silent blank explanation.
+      setExplError(error.message || 'Unknown error');
       console.error('Error fetching API response:', error);
     }
   };
@@ -137,9 +141,25 @@ const HomePage = () => {
       ) : (
         <div></div>
       )}
-      <Body baseFontSize={16} as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', fontSize: '19px', fontFamily: 'sans-serif', lineHeight: 2 }}>
-        {explSets.userProfile}
-      </Body>
+      {explError ? (
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'left', background: '#FFEAE5', border: '1px solid #FFCDC7', borderRadius: '8px', padding: '15px', marginTop: '10px' }}>
+          <Image
+            src={'/images/Error.png'}
+            alt="Error"
+            style={{ marginRight: '10px', maxWidth: '40px', borderRadius: '10px' }}
+            width={40} height={40}
+          />
+          <Body baseFontSize={16} as="pre" style={{ whiteSpace: 'pre-line', fontSize: '17px', fontFamily: 'sans-serif', color: '#970606' }}>
+            {'The AI explanation could not be generated — the language model service is unavailable.\n' +
+             'This is a backend/service issue, not something the credit profile sliders can fix.\n\n' +
+             'Details: ' + explError}
+          </Body>
+        </div>
+      ) : (
+        <Body baseFontSize={16} as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', fontSize: '19px', fontFamily: 'sans-serif', lineHeight: 2 }}>
+          {explSets.userProfile}
+        </Body>
+      )}
       <H3></H3>
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', marginTop: "40px" }}>
         <H3 style={{ display: 'inline' }}>Traditional Scorecard Based Credit Scoring</H3>
