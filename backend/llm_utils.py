@@ -31,8 +31,10 @@ llm = ChatFireworks(
         model=os.environ.get("FIREWORKS_MODEL")
               or "accounts/fireworks/models/gpt-oss-120b",
         temperature=0.000001,
-        max_tokens=300,
-        model_kwargs={"top_p": 0.9},
+        # GPT-OSS reasoning tokens count against max_tokens; keep reasoning
+        # low and leave enough budget for the full ~200-word explanation.
+        max_tokens=700,
+        model_kwargs={"top_p": 0.9, "reasoning_effort": "low"},
     )
 
 # Embedding model - lazy initialization

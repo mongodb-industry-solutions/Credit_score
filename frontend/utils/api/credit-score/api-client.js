@@ -24,7 +24,17 @@ class CreditScoreAPIClient {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch credit score: ${response.status}`);
+        // Surface the backend's error detail (e.g. LLM connection failure)
+        // so the UI can show sales why the explanation is unavailable.
+        let detail = `status ${response.status}`;
+        try {
+          const body = await response.json();
+          // backend uses `detail`; proxy-level failures use `error`/`details`
+          detail = body.detail || body.details || body.error || detail;
+        } catch (e) {
+          // response had no JSON body; keep the status-based message
+        }
+        throw new Error(detail);
       }
 
       return await response.json();
