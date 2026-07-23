@@ -156,9 +156,9 @@ const HomePage = () => {
           </Body>
         </div>
       ) : (
-        <Body baseFontSize={16} as="pre" style={{ wordWrap: 'break-word', overflowX: 'hidden', whiteSpace: 'pre-line', fontSize: '19px', fontFamily: 'sans-serif', lineHeight: 2 }}>
-          {explSets.userProfile}
-        </Body>
+        <div style={{ fontSize: '19px', fontFamily: 'sans-serif', lineHeight: 1.7, wordWrap: 'break-word', overflowX: 'hidden' }}>
+          <Markdown>{explSets.userProfile}</Markdown>
+        </div>
       )}
       <H3></H3>
       <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', marginTop: "40px" }}>
