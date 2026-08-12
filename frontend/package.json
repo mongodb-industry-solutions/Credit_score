@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 8080",
-    "build": "next build",
-    "start": "next start --port 8080",
+    "dev": "next dev --webpack --port 8000",
+    "build": "next build --webpack",
+    "start": "next start --port 8000",
     "lint": "next lint"
   },
   "dependencies": {
@@ -15,7 +15,7 @@
     "@leafygreen-ui/leafygreen-provider": "^3.1.12",
     "@leafygreen-ui/loading-indicator": "^2.0.8",
     "@leafygreen-ui/logo": "^8.0.12",
-    "@leafygreen-ui/modal": "^17.0.2",
+    "@leafygreen-ui/modal": "16.1.0",
     "@leafygreen-ui/number-input": "^1.0.19",
     "@leafygreen-ui/password-input": "^1.0.16",
     "@leafygreen-ui/search-input": "^2.1.3",
@@ -27,7 +27,7 @@
     "axios": "^1.6.7",
     "clear": "^0.1.0",
     "dotenv": "^16.4.5",
-    "next": "^14.2.35",
+    "next": "^16.2.2",
     "range-slider-input": "^2.4.4",
     "rc-slider": "^10.5.0",
     "react": "^18.2.0",

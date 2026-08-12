@@ -97,6 +97,38 @@ def get_credit_score_expl(user_profile_ip, pred, allowed_credit_limit, feature_i
                                                  feature_importance=feature_importance)
     return invoke_llm(prompt)
 
+
+def _format_card_suggestions_json(card_docs, default_score=0.0):
+    """Format card documents into the frontend contract.
+
+    Expected input shape examples:
+    - {"title": "Card Name", "text": "Description"}
+    - {"name": "Card Name", "description": "Description"}
+    """
+    card_suggestions_list = []
+
+    for doc in card_docs:
+        title = (doc.get("title") or doc.get("name") or "Credit Card").strip()
+        description = (doc.get("text") or doc.get("description") or "").strip()
+        score = doc.get("score", default_score)
+
+        if description:
+            card_suggestions_list.append(
+                {
+                    "name": title,
+                    "description": description,
+                    "score": score,
+                }
+            )
+
+    return json.dumps({"card_suggestions": card_suggestions_list}, ensure_ascii=False)
+
+
+def _fallback_card_suggestions(limit=5):
+    """Return deterministic fallback suggestions directly from MongoDB."""
+    docs = list(vcol.find({}, {"_id": 0, "title": 1, "text": 1}).limit(limit))
+    return _format_card_suggestions_json(docs, default_score=0.0)
+
 @lru_cache(maxsize=100)
 def get_card_suggestions(user_profile, user_profile_ip, pred, allowed_credit_limit):
     """
@@ -165,4 +197,13 @@ def get_card_suggestions(user_profile, user_profile_ip, pred, allowed_credit_lim
         
     except Exception as e:
         print(f"Error retrieving relevant documents: {e}")
-        raise ValueError("Failed to retrieve relevant documents for card suggestions.")
+
+        # Gracefully degrade when external vector search/embedding provider is unavailable
+        # (e.g., invalid/forbidden API key from embedding provider).
+        try:
+            fallback_json = _fallback_card_suggestions(limit=5)
+            print("Using MongoDB fallback suggestions due to vector retrieval failure.")
+            return fallback_json
+        except Exception as fallback_error:
+            print(f"Fallback retrieval also failed: {fallback_error}")
+            raise ValueError("Failed to retrieve relevant documents for card suggestions.")
