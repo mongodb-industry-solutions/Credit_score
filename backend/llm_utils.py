@@ -5,6 +5,7 @@ from langchain_fireworks import ChatFireworks
 from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_voyageai import VoyageAIEmbeddings
 
+from db_config import APP_NAME
 from prompt_utils import get_credit_score_expl_prompt
 
 from dotenv import load_dotenv
@@ -18,7 +19,7 @@ MONGO_CONN=os.environ.get("MONGO_CONNECTION_STRING")
 MONGO_DB_NAME=os.environ.get("MONGODB_DB") 
 MONGO_COLL_NAME=os.environ.get("MONGODB_COLLECTION")
 
-client = MongoClient(MONGO_CONN)
+client = MongoClient(MONGO_CONN, appName=APP_NAME)
 vcol = client[MONGO_DB_NAME][MONGO_COLL_NAME]
 
 # Model is configurable via FIREWORKS_MODEL (ksec secret / environments/*.yaml).
