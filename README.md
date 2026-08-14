@@ -21,25 +21,36 @@ This GitHub repository presents a demo in which you will be able to log on to a 
 The installation is divided into five:
 
 - [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/)
-- [Insert the two file in ./data folder with mongoDB compass on a database called "bfsi-genai"](https://www.mongodb.com/docs/compass/current/documents/insert/)
-- Create your own [search index](https://www.mongodb.com/docs/atlas/atlas-search/create-index/) called "default" on the cc_products_voyage collection.
+- [Import two files from ./data with MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/) into a database of your choice:
+  - `user_data.json` into a collection named `user_data`
+  - `cc_products_voyage.json` into a collection of your choice — this is the one you point `MONGODB_COLLECTION` at
+
+- Create a [vector search index](https://www.mongodb.com/docs/atlas/atlas-vector-search/create-index/) called `default` on the card collection. From the repo root, with `backend/.env` filled in:
+
+  ```bash
+  cd backend && .venv/bin/python create_index.py
+  ```
+
+  The script creates the index below and waits until it is queryable. To create it
+  by hand in the Atlas UI instead, choose **MongoDB Vector Search** 
+  and use:
 
 ```json
 {
-  "mappings": {
-    "dynamic": true,
-    "fields": {
-      "embedding": [
-        {
-          "dimensions": 768,
-          "similarity": "euclidean",
-          "type": "knnVector"
-        }
-      ]
+  "fields": [
+    {
+      "type": "vector",
+      "path": "embedding",
+      "numDimensions": 1024,
+      "similarity": "euclidean"
     }
-  }
+  ]
 }
 ```
+
+> [!Important]
+> The index must be a **vector search** index, and `numDimensions` must be **1024** to
+> match the `voyage-3-large` embeddings stored in `cc_products_voyage.json`. 
 
 - [Installation of the backend](./backend/)
 - [Installation of the frontend](./frontend/)
