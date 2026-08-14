@@ -16,7 +16,52 @@ This GitHub repository presents a demo in which you will be able to log on to a 
 > [!Warning]
 > This demo uses LLMs. We will be using Fireworks.ai and therefore will need an API key, which is not included here. However, you can still sign up for free with your Google account [here](https://fireworks.ai/login). Fireworks.ai is a partner of MongoDB AI Applications Program (MAAP), which you can read more about [here](https://www.mongodb.com/services/consulting/ai-applications-program).
 
+## Why MongoDB?
+
+Alternative credit scoring means combining data that does not share a shape. This
+demo needs all of it behind one connection string:
+
+- **One store for the scoring inputs and the card catalogue.** A banking profile is
+  flat, numeric, and wide — 30 fields per applicant. A credit card product is prose:
+  eligibility rules, fee waivers, lounge access. Both live in the same database, read
+  by the same client, with no join between two systems.
+- **Vector search on the same data you already store.** Finding cards that suit an
+  applicant is a similarity problem, not a filter. The card descriptions and their
+  embeddings sit in one collection, so retrieval is a query rather than a round trip
+  to a separate vector database that has to be kept in sync.
+- **A document model that survives model changes.** The scorecard's inputs shift as
+  the model is retrained. Adding a field like `Monthly_Rental_Commitment` needs no
+  migration and no schema change.
+
+## Why Voyage AI?
+
+The card catalogue is marketing copy, and the query is a machine-generated profile
+of an applicant. These read nothing alike, which is the whole retrieval problem:
+
+- **Matching intent, not vocabulary.** A "Good" applicant should surface premium
+  cards, but the profile never contains the words *priority pass*, *lounge*, or
+  *super premium* — those appear only in the card text. The embedding has to connect
+  a salary and a utilization ratio to the language of a product page.
+- **Keeping close products apart.** Many of these cards differ only in fee waivers
+  and reward tiers, and several share a name stem. Retrieval is only useful if a
+  premium travel card and an entry-level cashback card land in different places.
+- **1024 dimensions, from the same platform as the database.** `voyage-3-large`
+  matches the index this repo creates, and one API key covers embedding the query
+  and searching it — no second vendor to provision.
+
 ## Installation of the Demo
+
+### Prerequisites
+
+- **Python 3.13** (the backend pins `>=3.13,<3.14`; the Docker image uses 3.13-slim)
+- **Node.js 20+** (the frontend Docker image pins 20.10.0)
+- **A MongoDB Atlas cluster** — Atlas is required, because the demo
+  uses MongoDB Vector Search
+- **A Fireworks AI API key** — [sign up free](https://fireworks.ai/login)
+- **A Voyage AI API key** — [get one here](https://www.voyageai.com/). It must be a
+  key issued by Voyage AI directly
+- **Docker 24+** — only if you use the Docker path below
+- **macOS only:** `brew install libomp`, which XGBoost needs in order to load
 
 The installation is divided into five:
 
