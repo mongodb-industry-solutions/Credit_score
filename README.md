@@ -9,12 +9,12 @@ Credit scoring has always faced persistent challenges, from biases and discrimin
 
 If you want to delve into more detail, our blog sheds light on credit scoring fundamentals, challenges with traditional systems, and the role of AI in creating more inclusive models.
 
-[Read the Blog!](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel)
+[Read the Blog!](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel)
 
 This GitHub repository presents a demo in which you will be able to log on to a client that has already submitted a Credit card application. This approach can be applied to other credit products – like personal loans, mortgages, corporate loans, and trade finance credit lines – and their applications without necessarily confining them to a credit card product only. Its main functionality is for the customer to use generative AI (GenAI) to get a detailed explanation of why the application was rejected. We will also leverage MongoDB vector search capabilities to provide recommendations of different cards that might be more adapted for the customer.
 
 > [!Warning]
-> This demo uses LLMs. We will be using Fireworks.ai and therefore will need an API key, which is not included here. However, you can still sign up for free with your Google account [here](https://fireworks.ai/login). Fireworks.ai is a partner of MongoDB AI Applications Program (MAAP), which you can read more about [here](https://www.mongodb.com/services/consulting/ai-applications-program?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel).
+> This demo uses LLMs. We will be using Fireworks.ai and therefore will need an API key, which is not included here. However, you can still sign up for free with your Google account [here](https://fireworks.ai/login). Fireworks.ai is a partner of MongoDB AI Applications Program (MAAP), which you can read more about [here](https://www.mongodb.com/services/consulting/ai-applications-program?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel).
 
 ## Why MongoDB?
 
@@ -56,7 +56,7 @@ of an applicant. These read nothing alike, which is the whole retrieval problem:
 - **Python 3.13** (the backend pins `>=3.13,<3.14`; the Docker image uses 3.13-slim)
 - **Node.js 20+** (the frontend Docker image pins 20.10.0)
 - **A MongoDB Atlas cluster** — Atlas is required, because the demo
-  uses MongoDB Vector Search. [Sign up for free](https://www.mongodb.com/products/platform?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel)
+  uses MongoDB Vector Search. [Sign up for free](https://www.mongodb.com/products/platform?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel)
   and create an M0 cluster
 - **A Fireworks AI API key** — [sign up free](https://fireworks.ai/login)
 - **A Voyage AI API key** — [get one here](https://www.voyageai.com/). It must be a
@@ -66,12 +66,12 @@ of an applicant. These read nothing alike, which is the whole retrieval problem:
 
 The installation is divided into five:
 
-- [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel)
-- [Import two files from ./data with MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel) into a database of your choice:
+- [Provisioning an M0 Atlas instance](https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel)
+- [Import two files from ./data with MongoDB Compass](https://www.mongodb.com/docs/compass/current/documents/insert/?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel) into a database of your choice:
   - `user_data.json` into a collection named `user_data`
   - `cc_products_voyage.json` into a collection of your choice — this is the one you point `MONGODB_COLLECTION` at
 
-- Create a [vector search index](https://www.mongodb.com/docs/atlas/atlas-vector-search/create-index/?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel) called `default` on the card collection. From the repo root, with `backend/.env` filled in:
+- Create a [vector search index](https://www.mongodb.com/docs/atlas/atlas-vector-search/create-index/?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel) called `default` on the card collection. From the repo root, with `backend/.env` filled in:
 
   ```bash
   cd backend && .venv/bin/python create_index.py
@@ -141,11 +141,11 @@ In the previous sections, we explored how to:
 - To insert your own dataset
 - Set up your collection for vector search.
 
-Are you prepared to harness these capabilities for your projects? Should you encounter any roadblocks or have questions, our vibrant [developer forums](https://www.mongodb.com/community/forums/?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel) are here to support you every step of the way. Or if you prefer to contact us directly at [industry.solutions@mongodb.com](mailto:industry.solutions@mongodb.com).
+Are you prepared to harness these capabilities for your projects? Should you encounter any roadblocks or have questions, our vibrant [developer forums](https://www.mongodb.com/community/forums/?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel) are here to support you every step of the way. Or if you prefer to contact us directly at [industry.solutions@mongodb.com](mailto:industry.solutions@mongodb.com).
 
 You can also dive into the following resources:
 
-- [Reducing Bias in Credit Scoring with Generative Al](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai?utm_campaign=devrel&utm_medium=github&utm_content=is.credit.score&utm_term=learning.fuel)
+- [Reducing Bias in Credit Scoring with Generative Al](https://www.mongodb.com/blog/post/credit-scoring-applications-with-generative-ai?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel)
 
 ## Disclaimer
 
