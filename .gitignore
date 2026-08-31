@@ -5,8 +5,9 @@ knowledge_base_kanopy/
 security_check.sh
 SECURITY_CHECK_README.md
 
-# claude
-**/.claude
+# claude: share the plugin config, keep per-developer overrides local
+**/.claude/*
+!**/.claude/settings.json
 
 # task-def.json
 **/task-def.json
@@ -207,8 +208,9 @@ tmp/
 # Kanopy
 knowledge_base_kanopy/
 
-# claude
-**/.claude
+# claude: share the plugin config, keep per-developer overrides local
+**/.claude/*
+!**/.claude/settings.json
 
 # task-def.json
 **/task-def.json
