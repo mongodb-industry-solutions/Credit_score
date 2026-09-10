@@ -6,6 +6,7 @@ import os
 import json
 import numpy as np
 import sys
+from db_config import APP_NAME
 from dummy import PrepareDummyCols
 from dotenv import load_dotenv
 from functools import lru_cache
@@ -34,7 +35,7 @@ load_dotenv()
 # MongoDB setup
 MONGO_CONN = os.environ.get("MONGO_CONNECTION_STRING")
 COLLECTION = os.environ.get("MONGODB_DB")
-client = MongoClient(MONGO_CONN)
+client = MongoClient(MONGO_CONN, appName=APP_NAME)
 col = client[COLLECTION]["user_data"]
 
 # Model loading - lazy initialization to avoid pickle issues with uvicorn reloader

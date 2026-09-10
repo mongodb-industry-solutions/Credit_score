@@ -62,8 +62,14 @@ FIREWORKS_API_KEY=
 
 # Voyage AI API Key (for embeddings)
 # Get your API key from: https://www.voyageai.com/
+# Must be issued by Voyage AI. Keys issued for MongoDB's own embedding endpoints
+# are rejected with a 403, because this backend calls the Voyage AI API directly.
 VOYAGE_API_KEY=
 ```
+
+`MONGODB_COLLECTION` is the collection holding the card catalogue and its embeddings
+— the one the vector search index is built on. `user_data` is not configurable; the
+backend always reads applicants from a collection of that name inside `MONGODB_DB`.
 
 > [!Warning]
 > Replace all placeholder values with your actual credentials. The `.env` file is gitignored and will not be committed to the repository.
