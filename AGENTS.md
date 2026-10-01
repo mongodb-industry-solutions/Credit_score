@@ -18,7 +18,7 @@ uv venv && uv sync                  # or: python3 -m venv .venv && .venv/bin/pip
 .venv/bin/uvicorn main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-Frontend (from `frontend/`, Node 20+):
+Frontend (from `frontend/`, Node 20.19.0+):
 
 ```bash
 npm install --legacy-peer-deps      # plain npm install and npm ci both fail

@@ -54,7 +54,7 @@ of an applicant. These read nothing alike, which is the whole retrieval problem:
 ### Prerequisites
 
 - **Python 3.13** (the backend pins `>=3.13,<3.14`; the Docker image uses 3.13-slim)
-- **Node.js 20+** (the frontend Docker image pins 20.10.0)
+- **Node.js 20.19.0+** (the frontend Docker image pins 20.19.0)
 - **A MongoDB Atlas cluster** — Atlas is required, because the demo
   uses MongoDB Vector Search. [Sign up for free](https://www.mongodb.com/products/platform?utm_campaign=devrel&utm_medium=github&utm_content=genai.credit.score&utm_term=learning.fuel)
   and create an M0 cluster
