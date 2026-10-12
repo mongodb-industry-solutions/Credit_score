@@ -9,7 +9,7 @@ dependencies = [
     "uvicorn==0.34.0",
     
     # MongoDB
-    "pymongo==4.11.2",
+    "pymongo==4.18.2",
     
     # ML/AI libraries
     "pandas==2.2.3",
